@@ -1,0 +1,88 @@
+############################
+# ROS 2 build artifacts
+############################
+build/
+install/
+log/
+
+# colcon
+.colcon/
+.colcon_install_layout
+*.log
+
+############################
+# ROS workspace overlays
+############################
+src/**/build/
+src/**/install/
+src/**/log/
+
+############################
+# Python artifacts
+############################
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+.eggs/
+.venv/
+venv/
+
+############################
+# CMake
+############################
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+
+############################
+# Docker
+############################
+# Docker runtime files
+docker/*.log
+docker/tmp/
+docker/.env
+
+# Docker override files (optional – ignore if local-only)
+docker-compose.override.yml
+
+# Docker volumes (if stored locally)
+docker/volumes/
+*.tar
+
+############################
+# Environment / secrets
+############################
+.env
+.env.*
+!.env.example
+
+############################
+# IDE / Editor
+############################
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+############################
+# OS files
+############################
+.DS_Store
+Thumbs.db
+
+############################
+# ROS bag files
+############################
+*.bag
+*.db3
+
+############################
+# Test / coverage
+############################
+coverage/
+*.gcda
+*.gcno
+*.gcov
