@@ -33,6 +33,7 @@ RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/r
 RUN apt update && apt install -y \
     ros-humble-desktop \
     python3-colcon-common-extensions \
+    python3-serial \
     python3-rosdep \
     python3-argcomplete \
     && rm -rf /var/lib/apt/lists/*
