@@ -16,5 +16,5 @@ class ESCDriver:
         esc_value = int(speed_mps * 50)
         esc_value = max(-100, min(100, esc_value))
 
-        cmd = f"M {esc_value}\n"
+        cmd = f"T {esc_value}\n"
         self.ser.write(cmd.encode())
