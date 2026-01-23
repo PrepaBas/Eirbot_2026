@@ -12,8 +12,11 @@ RUN apt update && apt install -y \
     cmake \
     git \
     wget \
+    software-properties-common \
     locales \
     sudo \
+    && add-apt-repository -y universe \
+    && locale-gen en_US.UTF-8 \
     && rm -rf /var/lib/apt/lists/*
 
 # Locale
@@ -36,6 +39,9 @@ RUN apt update && apt install -y \
     python3-serial \
     python3-rosdep \
     python3-argcomplete \
+    gazebo \
+    ros-humble-gazebo-ros-pkgs \
+    ros-humble-gazebo-ros \
     && rm -rf /var/lib/apt/lists/*
 
 # rosdep
