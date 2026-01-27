@@ -27,13 +27,13 @@
       <!-- Rotate cylinder so it spins around Y -->
       <origin rpy="-1.5708 0 0"/>
       <geometry>
-        <cylinder radius="0.05" length="0.03"/>
+        <cylinder radius="0.0285" length="0.01"/>
       </geometry>
     </visual>
     <collision>
       <origin rpy="-1.5708 0 0"/>
       <geometry>
-        <cylinder radius="0.05" length="0.03"/>
+        <cylinder radius="0.0285" length="0.01"/>
       </geometry>
     </collision>
     <inertial>
@@ -49,13 +49,13 @@
     <visual>
       <origin rpy="-1.5708 0 0"/>
       <geometry>
-        <cylinder radius="0.05" length="0.03"/>
+        <cylinder radius="0.0285" length="0.01"/>
       </geometry>
     </visual>
     <collision>
       <origin rpy="-1.5708 0 0"/>
       <geometry>
-        <cylinder radius="0.05" length="0.03"/>
+        <cylinder radius="0.0285" length="0.01"/>
       </geometry>
     </collision>
     <inertial>
@@ -70,14 +70,14 @@
   <joint name="left_wheel_joint" type="continuous">
     <parent link="base_link"/>
     <child link="left_wheel"/>
-    <origin xyz="0 0.15 -0.05"/>
+    <origin xyz="0 0.15 -0.03"/>
     <axis xyz="0 1 0"/>
   </joint>
 
   <joint name="right_wheel_joint" type="continuous">
     <parent link="base_link"/>
     <child link="right_wheel"/>
-    <origin xyz="0 -0.15 -0.05"/>
+    <origin xyz="0 -0.15 -0.03"/>
     <axis xyz="0 1 0"/>
   </joint>
 
@@ -87,8 +87,8 @@
       <left_joint>left_wheel_joint</left_joint>
       <right_joint>right_wheel_joint</right_joint>
 
-      <wheel_separation>0.30</wheel_separation>
-      <wheel_diameter>0.10</wheel_diameter>
+      <wheel_separation>0.40</wheel_separation>
+      <wheel_diameter>0.047</wheel_diameter>
 
       <robot_base_frame>base_link</robot_base_frame>
       <odometry_frame>odom</odometry_frame>

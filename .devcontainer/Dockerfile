@@ -12,9 +12,9 @@ RUN apt update && apt install -y \
     cmake \
     git \
     wget \
-    software-properties-common \
     locales \
     sudo \
+    software-properties-common \
     && add-apt-repository -y universe \
     && locale-gen en_US.UTF-8 \
     && rm -rf /var/lib/apt/lists/*
@@ -39,6 +39,8 @@ RUN apt update && apt install -y \
     python3-serial \
     python3-rosdep \
     python3-argcomplete \
+    ros-humble-ros2-control \
+    ros-humble-ros2-controllers \
     gazebo \
     ros-humble-gazebo-ros-pkgs \
     ros-humble-gazebo-ros \
