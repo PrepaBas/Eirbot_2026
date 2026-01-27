@@ -1,7 +1,7 @@
 [workspace]
 name = "robostack"
 description = "Development environment for RoboStack ROS packages"
-channels = ["conda-forge"]
+channels = ["robostack-humble", "conda-forge"]
 platforms = ["linux-64", "win-64", "osx-64", "osx-arm64", "linux-aarch64"]
 
 # This will automatically activate the ros workspace on activation
@@ -33,6 +33,10 @@ rosdep = "*"
 colcon-common-extensions = "*"
 pyserial = ">=3.5,<4"
 just = ">=1.46.0,<2"
+gazebo = ">=11.15.1,<12"
+ros-humble-gazebo-ros-pkgs = ">=3.7.0,<4"
+ros-humble-gazebo-ros = ">=3.7.0,<4"
+ros-humble-xacro = ">=2.0.8,<3"
 
 [target.linux.dependencies]
 libgl-devel = "*"

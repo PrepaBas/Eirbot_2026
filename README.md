@@ -1,6 +1,15 @@
 # Eirbot 2026
 objectif : premier
 
+
+## Config Pixi
+follow `https://robostack.github.io/GettingStarted.html#__tabbed_1_3` and install pixi.
+```bash
+pixi install \
+pixi shell -e humble \
+just build
+```
+
 ## Config Docker
 Il y a deux façons de lancer le projet dans un docker.
 `.devcontainer` contient :
@@ -13,3 +22,4 @@ docker run -it --rm --name ros2_dev -v ~/<nom_du_workspace>:/home/ros/ros2_ws ro
 ## Fonctionnement ROS2
 Ros2 (Robot Operating System 2) permet de créer une architecture de robot et d'utiliser des outils de développemet quasi-professionels. 
 Son installation est facilité par le docker. Après le clone du git, il faut 
+
