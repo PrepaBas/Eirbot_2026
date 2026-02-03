@@ -19,6 +19,7 @@ build = "colcon build --merge-install --cmake-args -DCMAKE_EXPORT_COMPILE_COMMAN
 [feature.build.target.unix.tasks]
 build = "colcon build --symlink-install --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DPython_FIND_VIRTUALENV=ONLY -DPython3_FIND_VIRTUALENV=ONLY"
 
+
 # Dependencies used by all environments
 [dependencies]
 python = "*"
@@ -29,7 +30,7 @@ pkg-config = "*"
 make = "*"
 ninja = "*"
 # ROS specific tools
-rosdep = "*"
+# rosdep = "*"
 colcon-common-extensions = "*"
 pyserial = ">=3.5,<4"
 just = ">=1.46.0,<2"
@@ -37,6 +38,11 @@ gazebo = ">=11.15.1,<12"
 ros-humble-gazebo-ros-pkgs = ">=3.7.0,<4"
 ros-humble-gazebo-ros = ">=3.7.0,<4"
 ros-humble-xacro = ">=2.0.8,<3"
+
+
+
+[tasks]
+source = "source install/setup.bash"
 
 [target.linux.dependencies]
 libgl-devel = "*"
