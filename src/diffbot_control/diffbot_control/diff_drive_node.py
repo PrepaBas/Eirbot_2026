@@ -2,7 +2,7 @@ import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Twist
 
-from diffbot_control.diffbot_control.esp_driver import ESPDriver
+from diffbot_control.esp_driver import ESPDriver
 
 
 class DiffDriveNode(Node):

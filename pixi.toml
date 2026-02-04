@@ -29,7 +29,6 @@ cmake = "*"
 pkg-config = "*"
 make = "*"
 ninja = "*"
-# ROS specific tools
 colcon-common-extensions = "*"
 pyserial = ">=3.5,<4"
 just = ">=1.46.0,<2"
