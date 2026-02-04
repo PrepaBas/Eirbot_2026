@@ -30,7 +30,6 @@ pkg-config = "*"
 make = "*"
 ninja = "*"
 # ROS specific tools
-# rosdep = "*"
 colcon-common-extensions = "*"
 pyserial = ">=3.5,<4"
 just = ">=1.46.0,<2"
