@@ -23,6 +23,8 @@ build = "colcon build --symlink-install --cmake-args -DCMAKE_EXPORT_COMPILE_COMM
 # Dependencies used by all environments
 [dependencies]
 python = "*"
+just = ">=1.46.0,<2"
+
 # Build tools
 compilers = "*"
 cmake = "*"
@@ -31,11 +33,23 @@ make = "*"
 ninja = "*"
 colcon-common-extensions = "*"
 pyserial = ">=3.5,<4"
-just = ">=1.46.0,<2"
+
+# Gazebo dependencies
 gazebo = ">=11.15.1,<12"
 ros-humble-gazebo-ros-pkgs = ">=3.7.0,<4"
 ros-humble-gazebo-ros = ">=3.7.0,<4"
-ros-humble-xacro = ">=2.0.8,<3"
+
+# ROS 2 Control dependencies
+ros-humble-xacro = "*"
+ros-humble-ros2-control = "*"
+ros-humble-ros2-controllers = "*"
+ros-humble-controller-manager = "*"
+ros-humble-diff-drive-controller = "*"
+ros-humble-joint-state-broadcaster ="*"
+ros-humble-hardware-interface = "*"
+ros-humble-pluginlib = "*"
+ros-humble-ros2-control-cmake = "*"
+ros-humble-joint-state-publisher-gui = ">=2.4.0,<3"
 
 
 
