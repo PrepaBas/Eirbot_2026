@@ -5,15 +5,12 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "(GNU|Clang)")
   add_compile_options(-Wall -Wextra)
 endif()
 
-include(FetchContent)
-
 # find dependencies
 set(THIS_PACKAGE_INCLUDE_DEPENDS
   hardware_interface
   pluginlib
   rclcpp
   rclcpp_lifecycle
-  libserial
 )
 
 # find dependencies
@@ -38,6 +35,9 @@ ament_target_dependencies(
   diffdrive_arduino PUBLIC
   ${THIS_PACKAGE_INCLUDE_DEPENDS}
 )
+
+# Link it to your node
+target_link_libraries(diffdrive_arduino PUBLIC serial)
 
 # Causes the visibility macros to use dllexport rather than dllimport,
 # which is appropriate when building the dll but not consuming it.
