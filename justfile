@@ -1,3 +1,10 @@
+help:
+  @just --list
+
+install:
+    pixi install && \
+      pixi run -e humble build-libserial
+
 build:
     pixi run build
 
