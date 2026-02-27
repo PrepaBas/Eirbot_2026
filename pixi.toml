@@ -50,11 +50,21 @@ ros-humble-hardware-interface = "*"
 ros-humble-pluginlib = "*"
 ros-humble-ros2-control-cmake = "*"
 ros-humble-joint-state-publisher-gui = ">=2.4.0,<3"
+doxygen = ">=1.13.2,<2"
 
 
 
 [tasks]
 source = "source install/setup.bash"
+# local libserial built from source
+clone-libserial = { cmd = "git clone https://github.com/crayzeewulf/libserial.git /tmp/libserial || true" }
+build-libserial = { cmd = """
+    cmake -S /tmp/libserial -B /tmp/libserial/build \
+      -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX \
+      -DCMAKE_BUILD_TYPE=Release &&
+    cmake --build /tmp/libserial/build -j$(nproc) &&
+    cmake --install /tmp/libserial/build
+""", depends-on = ["clone-libserial"] }
 
 [target.linux.dependencies]
 libgl-devel = "*"
