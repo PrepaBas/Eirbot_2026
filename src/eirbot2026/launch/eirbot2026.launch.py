@@ -2,8 +2,10 @@ import os
 from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, TimerAction
+from launch.actions import DeclareLaunchArgument, TimerAction, IncludeLaunchDescription
 from launch.substitutions import Command, LaunchConfiguration, PathJoinSubstitution, FindExecutable
+from launch.launch_description_sources import PythonLaunchDescriptionSource
+
 
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
@@ -30,6 +32,20 @@ def generate_launch_description():
     robot_description = {'robot_description': robot_description_content}
 
 
+    # Launch Gazebo
+    gazebo = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([
+        os.path.join(get_package_share_directory('gazebo_ros'), 'launch', 'gazebo.launch.py')]),
+        launch_arguments={'world': 'my_world.world'}.items()
+    )
+
+    # Spawn robot
+    spawn_entity = Node (
+        package = 'gazebo_ros',
+        executable = 'spawn_entity.py',
+        arguments = ['-entity', 'my_robot', '-topic', 'robot_description']
+    )
+    
 
     joint_state_publisher_gui_node = Node(
         package='joint_state_publisher_gui',
@@ -38,16 +54,19 @@ def generate_launch_description():
 
     # configuration for rviz
     rviz_config_file = PathJoinSubstitution(
-        [FindPackageShare('motor_controller'), 'rviz', 'display.rviz']
+        [
+            FindPackageShare('eirbot2026'),
+            'rviz',
+            'display.rviz'
+        ]
     )
-
 
 
 
     # configuration specifying type of controllers for joints and their configurable parameters
     motor_controllers = PathJoinSubstitution(
         [
-            FindPackageShare('motor_controller'),
+            FindPackageShare('eirbot2026'),
             'config',
             'controllers.yaml',
         ]
@@ -117,6 +136,8 @@ def generate_launch_description():
     return LaunchDescription([
       
         control_node,
+        gazebo,
+        spawn_entity,
         robot_state_pub_node,
         joint_state_broadcaster_spawner,
         delay_rviz_after_joint_state_broadcaster_spawner,
