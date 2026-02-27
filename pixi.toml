@@ -50,6 +50,7 @@ ros-humble-hardware-interface = "*"
 ros-humble-pluginlib = "*"
 ros-humble-ros2-control-cmake = "*"
 ros-humble-joint-state-publisher-gui = ">=2.4.0,<3"
+doxygen = ">=1.13.2,<2"
 
 
 

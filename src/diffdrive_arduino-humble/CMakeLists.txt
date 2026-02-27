@@ -5,12 +5,22 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "(GNU|Clang)")
   add_compile_options(-Wall -Wextra)
 endif()
 
+include(FetchContent)
+
+FetchContent_Declare(
+  libserial
+  GIT_REPOSITORY https://github.com/crayzeewulf/libserial.git
+  GIT_TAG        v1.0.0
+)
+FetchContent_MakeAvailable(libserial)
+
 # find dependencies
 set(THIS_PACKAGE_INCLUDE_DEPENDS
   hardware_interface
   pluginlib
   rclcpp
   rclcpp_lifecycle
+  libserial
 )
 
 # find dependencies
@@ -36,17 +46,8 @@ ament_target_dependencies(
   ${THIS_PACKAGE_INCLUDE_DEPENDS}
 )
 
-include(FetchContent)
-
-FetchContent_Declare(
-  libserial
-  GIT_REPOSITORY https://github.com/crayzeewulf/libserial.git
-  GIT_TAG        v1.0.0
-)
-FetchContent_MakeAvailable(libserial)
-
 # Link it to your node
-target_link_libraries(your_node_name LibSerial::SerialPort)
+target_link_libraries(diffdrive_arduino LibSerial::SerialPort)
 
 target_link_libraries(diffdrive_arduino PUBLIC serial)
 
