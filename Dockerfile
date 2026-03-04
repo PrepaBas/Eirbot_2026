@@ -39,16 +39,19 @@ RUN apt update && apt install -y \
     python3-serial \
     python3-rosdep \
     python3-argcomplete \
-    ros-humble-ros2-control \
-    ros-humble-ros2-controllers \
     gazebo \
     ros-humble-gazebo-ros-pkgs \
     ros-humble-gazebo-ros \
+    ros-humble-ros2-control \
+    ros-humble-ros2-controllers \
     && rm -rf /var/lib/apt/lists/*
 
 # rosdep
 RUN rosdep init || true
 RUN rosdep update
+
+# install 
+RUN curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to /usr/local/bin
 
 # Source ROS automatically
 RUN echo "source /opt/ros/humble/setup.bash" >> /etc/bash.bashrc
