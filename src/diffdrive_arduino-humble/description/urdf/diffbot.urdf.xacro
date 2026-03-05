@@ -16,4 +16,9 @@
   <xacro:diffbot_ros2_control
     name="DiffBot" prefix="$(arg prefix)" />
 
+  <gazebo>
+      <plugin name="gazebo_ros2_control" filename="libgazebo_ros2_control.so">
+          <parameters>$(find diffdrive_arduino)/config/diffbot_controllers.yaml</parameters>
+      </plugin>
+  </gazebo>
 </robot>

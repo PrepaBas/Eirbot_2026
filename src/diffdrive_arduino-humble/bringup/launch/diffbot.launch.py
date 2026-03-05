@@ -14,22 +14,30 @@
 
 from launch import LaunchDescription
 from launch.actions import RegisterEventHandler
+from launch.actions import DeclareLaunchArgument
 from launch.event_handlers import OnProcessExit
-from launch.substitutions import Command, FindExecutable, PathJoinSubstitution
+from launch.substitutions import Command, FindExecutable, LaunchConfiguration, PathJoinSubstitution
 
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 
 
 def generate_launch_description():
+    # Declare the argument
+    use_gazebo_arg = DeclareLaunchArgument(
+        'use_gazebo',
+        default_value='false',
+        description='Use Gazebo simulation hardware interface'
+    )
     # Get URDF via xacro
     robot_description_content = Command(
         [
             PathJoinSubstitution([FindExecutable(name="xacro")]),
             " ",
             PathJoinSubstitution(
-                [FindPackageShare("diffdrive_arduino"), "urdf", "diffbot.urdf.xacro"]
-            ),
+                [FindPackageShare("diffdrive_arduino"), "urdf", "diffbot.urdf.xacro"]),
+            ' ',
+            'use_gazebo:=', LaunchConfiguration('use_gazebo'),
         ]
     )
     robot_description = {"robot_description": robot_description_content}
