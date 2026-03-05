@@ -42,11 +42,13 @@ RUN apt update && apt install -y \
     python3-argcomplete \
     gazebo \
     ros-humble-xacro \
-    ros-humble-gazebo-ros-pkgs \
     ros-humble-gazebo-ros \
+    ros-humble-gazebo-ros-pkgs \
+    ros-humble-gazebo-ros2-control \
     ros-humble-ros2-control \
     ros-humble-ros2-controllers \
     ros-humble-joint-state-publisher \
+    ros-humble-joint-state-publisher-gui \
     && rm -rf /var/lib/apt/lists/*
 
 # rosdep

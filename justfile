@@ -26,7 +26,7 @@ sd:
     ros2_container
 
 nd:
-    docker exec -it ros2_container /bin/bash
+    docker exec -it my_ros_container /bin/bash \
 
 bd:
     docker build -t ros2_container .
@@ -35,5 +35,7 @@ rosdep:
     sudo rosdep update \
     rosdep install --from-paths src --ignore-src -y
 
+rmd:
+    docker rm my_ros_container
 screen:
     xhost +local:root
