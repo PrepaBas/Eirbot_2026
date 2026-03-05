@@ -30,3 +30,10 @@ nd:
 
 bd:
     docker build -t ros2_container .
+
+rosdep:
+    sudo rosdep update \
+    rosdep install --from-paths src --ignore-src -y
+
+screen:
+    xhost +local:root

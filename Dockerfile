@@ -34,16 +34,19 @@ RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/r
 
 # Install ROS 2 Humble (desktop or base)
 RUN apt update && apt install -y \
+    libserial-dev \
     ros-humble-desktop \
     python3-colcon-common-extensions \
     python3-serial \
     python3-rosdep \
     python3-argcomplete \
     gazebo \
+    ros-humble-xacro \
     ros-humble-gazebo-ros-pkgs \
     ros-humble-gazebo-ros \
     ros-humble-ros2-control \
     ros-humble-ros2-controllers \
+    ros-humble-joint-state-publisher \
     && rm -rf /var/lib/apt/lists/*
 
 # rosdep
