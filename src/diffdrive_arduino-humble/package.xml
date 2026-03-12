@@ -21,6 +21,7 @@
   <depend>rclcpp_lifecycle</depend>
   <depend>libserial-dev</depend>
 
+  <exec_depend>gazebo_ros2_control</exec_depend>
   <exec_depend>ros2_controllers_test_nodes</exec_depend>
   <exec_depend>joint_state_broadcaster</exec_depend>
   <exec_depend>diff_drive_controller</exec_depend>

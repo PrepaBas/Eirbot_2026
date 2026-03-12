@@ -15,6 +15,7 @@
 from launch import LaunchDescription
 from launch.actions import RegisterEventHandler
 from launch.actions import DeclareLaunchArgument
+from launch.conditions import UnlessCondition
 from launch.event_handlers import OnProcessExit
 from launch.substitutions import Command, FindExecutable, LaunchConfiguration, PathJoinSubstitution
 
@@ -58,6 +59,7 @@ def generate_launch_description():
         executable="ros2_control_node",
         parameters=[robot_description, robot_controllers],
         output="both",
+        condition=UnlessCondition(LaunchConfiguration("use_gazebo"))
     )
     robot_state_pub_node = Node(
         package="robot_state_publisher",
