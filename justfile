@@ -23,6 +23,11 @@ sd:
     --user ros \
     --env="DISPLAY" \
     --env="QT_X11_NO_MITSHM=1" \
+    -v /dev:/dev  \
+    --privileged \
+    --ulimit rtprio=99 \
+    --ulimit memlock=-1 \
+    --cap-add=SYS_NICE \
     ros2_container
 
 nd:
@@ -37,5 +42,15 @@ rosdep:
 
 rmd:
     docker rm my_ros_container
+
 screen:
     xhost +local:root
+
+lgazebo:
+    ros2 launch gazebo_ros gazebo.launch.py 
+
+lspawn:
+    ros2 run gazebo_ros spawn_entity.py  -topic robot_description -entity my_bot
+
+ldiffbot:
+    ros2 launch diffdrive_arduino diffbot.launch.py use_gazebo:=true

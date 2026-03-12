@@ -41,6 +41,9 @@ RUN apt update && apt install -y \
     python3-rosdep \
     python3-argcomplete \
     gazebo \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN apt update && apt install -y \
     ros-humble-xacro \
     ros-humble-gazebo-ros \
     ros-humble-gazebo-ros-pkgs \
@@ -51,15 +54,12 @@ RUN apt update && apt install -y \
     ros-humble-joint-state-publisher-gui \
     && rm -rf /var/lib/apt/lists/*
 
-# rosdep
-RUN rosdep init || true
-RUN rosdep update
-
-# install 
+# install Just
 RUN curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to /usr/local/bin
 
 # Source ROS automatically
-RUN echo "source /opt/ros/humble/setup.bash" >> /etc/bash.bashrc
+#RUN echo "source /opt/ros/humble/setup.bash" >> /etc/bash.bashrc
+#RUN echo "source ~/ros2_ws/install/setup.bash" >> /etc/bash.bashrc
 
 # Create dev user (recommended)
 ARG USERNAME=ros
@@ -70,7 +70,23 @@ RUN groupadd -g $GID $USERNAME && \
     useradd -m -u $UID -g $GID -s /bin/bash $USERNAME && \
     echo "$USERNAME ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
+# ROSDEP
+USER root
+RUN rosdep init
 USER ros
-WORKDIR /home/ros
+RUN rosdep update
+WORKDIR /home/ros/ros2_ws
+COPY --chown=ros:ros src ./src
+RUN sudo apt-get update && \
+    rosdep install --from-paths src --ignore-src -y && \
+    sudo rm -rf /var/lib/apt/lists/*
+
+# Définit l'entrypoint pour que ROS soit sourcé même en mode non-interactif
+COPY ./ros_entrypoint.sh /
+RUN sudo chmod +x /ros_entrypoint.sh
+ENTRYPOINT ["/ros_entrypoint.sh"]
+CMD ["bash"]
+
+USER ros
 
 CMD ["bash"]
