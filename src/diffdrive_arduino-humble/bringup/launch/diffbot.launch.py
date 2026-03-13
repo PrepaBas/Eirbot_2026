@@ -1,117 +1,74 @@
-# Copyright 2020 ros2_control Development Team
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
 from launch import LaunchDescription
-from launch.actions import RegisterEventHandler
-from launch.actions import DeclareLaunchArgument
-from launch.conditions import UnlessCondition
-from launch.event_handlers import OnProcessExit
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
+from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.conditions import UnlessCondition, IfCondition
 from launch.substitutions import Command, FindExecutable, LaunchConfiguration, PathJoinSubstitution
-
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 
-
 def generate_launch_description():
-    # Declare the argument
+    # 1. Setup Substitutions & Arguments
+    use_gazebo = LaunchConfiguration('use_gazebo')
+    
     use_gazebo_arg = DeclareLaunchArgument(
-        'use_gazebo',
+        'use_gazebo', 
         default_value='false',
-        description='Use Gazebo simulation hardware interface'
-    )
-    # Get URDF via xacro
-    robot_description_content = Command(
-        [
-            PathJoinSubstitution([FindExecutable(name="xacro")]),
-            " ",
-            PathJoinSubstitution(
-                [FindPackageShare("diffdrive_arduino"), "urdf", "diffbot.urdf.xacro"]),
-            ' ',
-            'use_gazebo:=', LaunchConfiguration('use_gazebo'),
-        ]
-    )
-    robot_description = {"robot_description": robot_description_content}
-
-    robot_controllers = PathJoinSubstitution(
-        [
-            FindPackageShare("diffdrive_arduino"),
-            "config",
-            "diffbot_controllers.yaml",
-        ]
-    )
-    rviz_config_file = PathJoinSubstitution(
-        [FindPackageShare("diffdrive_arduino"), "rviz", "diffbot.rviz"]
+        description='Start Gazebo simulation'
     )
 
-    control_node = Node(
-        package="controller_manager",
-        executable="ros2_control_node",
-        parameters=[robot_description, robot_controllers],
-        output="both",
-        condition=UnlessCondition(LaunchConfiguration("use_gazebo"))
-    )
-    robot_state_pub_node = Node(
-        package="robot_state_publisher",
-        executable="robot_state_publisher",
-        output="both",
-        parameters=[robot_description],
-        remappings=[
-            ("/diff_drive_controller/cmd_vel_unstamped", "/cmd_vel"),
-        ],
-    )
-    rviz_node = Node(
-        package="rviz2",
-        executable="rviz2",
-        name="rviz2",
-        output="log",
-        arguments=["-d", rviz_config_file],
+    robot_description_content = Command([
+        PathJoinSubstitution([FindExecutable(name="xacro")]), " ",
+        PathJoinSubstitution([FindPackageShare("diffdrive_arduino"), "urdf", "diffbot.urdf.xacro"]),
+        " use_gazebo:=", use_gazebo
+    ])
+
+    config_path = lambda pkg, folder, file: PathJoinSubstitution([FindPackageShare(pkg), folder, file])
+
+    # 2. Gazebo Specific Actions (Conditional)
+    gazebo = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([
+            PathJoinSubstitution([FindPackageShare('gazebo_ros'), 'launch', 'gazebo.launch.py'])
+        ]),
+        condition=IfCondition(use_gazebo) # Only start Gazebo if use_gazebo is true
     )
 
-    joint_state_broadcaster_spawner = Node(
-        package="controller_manager",
-        executable="spawner",
-        arguments=["joint_state_broadcaster", "--controller-manager", "/controller_manager"],
+    spawn_entity = Node(
+        package='gazebo_ros',
+        executable='spawn_entity.py',
+        arguments=['-topic', 'robot_description', '-entity', 'diffbot'],
+        output='screen',
+        condition=IfCondition(use_gazebo) # Only spawn if use_gazebo is true
     )
 
-    robot_controller_spawner = Node(
-        package="controller_manager",
-        executable="spawner",
-        arguments=["diffbot_base_controller", "--controller-manager", "/controller_manager"],
-    )
-
-    # Delay rviz start after `joint_state_broadcaster`
-    delay_rviz_after_joint_state_broadcaster_spawner = RegisterEventHandler(
-        event_handler=OnProcessExit(
-            target_action=joint_state_broadcaster_spawner,
-            on_exit=[rviz_node],
-        )
-    )
-
-    # Delay start of robot_controller after `joint_state_broadcaster`
-    delay_robot_controller_spawner_after_joint_state_broadcaster_spawner = RegisterEventHandler(
-        event_handler=OnProcessExit(
-            target_action=joint_state_broadcaster_spawner,
-            on_exit=[robot_controller_spawner],
-        )
-    )
-
+    # 3. Standard Nodes
     nodes = [
-        control_node,
-        robot_state_pub_node,
-        joint_state_broadcaster_spawner,
-        delay_rviz_after_joint_state_broadcaster_spawner,
-        delay_robot_controller_spawner_after_joint_state_broadcaster_spawner,
+        use_gazebo_arg,
+        gazebo,
+        spawn_entity,
+        
+        Node(
+            package="robot_state_publisher",
+            executable="robot_state_publisher",
+            parameters=[{"robot_description": robot_description_content}],
+        ),
+
+        # Only runs for REAL hardware
+        Node(
+            package="controller_manager",
+            executable="ros2_control_node",
+            parameters=[{"robot_description": robot_description_content}, 
+                        config_path("diffdrive_arduino", "config", "diffbot_controllers.yaml")],
+            condition=UnlessCondition(use_gazebo)
+        ),
+
+        Node(package="controller_manager", executable="spawner", arguments=["joint_state_broadcaster"]),
+        Node(package="controller_manager", executable="spawner", arguments=["diffbot_base_controller"]),
+
+        Node(
+            package="rviz2",
+            executable="rviz2",
+            arguments=["-d", config_path("diffdrive_arduino", "rviz", "diffbot.rviz")],
+        ),
     ]
 
     return LaunchDescription(nodes)

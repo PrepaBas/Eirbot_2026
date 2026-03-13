@@ -38,6 +38,12 @@
       </joint>
     </ros2_control>
 
+    <hardware>
+      <xacro:if value="$(arg use_mock)">
+        <plugin>mock_components/GenericSystem</plugin>
+        <param name="calculate_dynamics">true</param>
+      </hardware>
+    </hardware>
   </xacro:macro>
 
 </robot>

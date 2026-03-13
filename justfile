@@ -9,11 +9,11 @@ build:
     cd ~/ros2_ws 
     colcon build --symlink-install --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DPython_FIND_VIRTUALENV=ONLY -DPython3_FIND_VIRTUALENV=ONLY
 
-lns:
-    ros2 run diffbot_control diff_drive_node --ros-args -p use_sim:=false -p esp_port:=/dev/ttyUSB0
+#lns:
+#    ros2 run diffbot_control diff_drive_node --ros-args -p use_sim:=false -p esp_port:=/dev/ttyUSB0
 
-lys:
-    ros2 run diffbot_control diff_drive_node --ros-args -p use_sim:=true 
+#lys:
+#    ros2 run diffbot_control diff_drive_node --ros-args -p use_sim:=true 
 
 sd:
     docker run -it \
@@ -54,3 +54,6 @@ lspawn:
 
 ldiffbot:
     ros2 launch diffdrive_arduino diffbot.launch.py use_gazebo:=true
+
+lk:
+    ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -r /cmd_vel:=/diffbot_base_controller/cmd_vel_unstamped -p use_sim_time:=true
