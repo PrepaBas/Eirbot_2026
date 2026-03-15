@@ -1,64 +1,44 @@
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
-from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.conditions import UnlessCondition, IfCondition
+from launch.actions import DeclareLaunchArgument
 from launch.substitutions import Command, FindExecutable, LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
 
 def generate_launch_description():
     # 1. Setup Substitutions & Arguments
-    use_gazebo = LaunchConfiguration('use_gazebo')
+    use_mock = LaunchConfiguration('use_mock')
     
-    use_gazebo_arg = DeclareLaunchArgument(
-        'use_gazebo', 
-        default_value='false',
-        description='Start Gazebo simulation'
+    # Declare the argument (Default to true so you can see it work immediately)
+    declare_use_mock = DeclareLaunchArgument(
+        'use_mock', 
+        default_value='true',
+        description='Use mock hardware (GenericSystem) instead of real hardware'
     )
 
+    # Pass the use_mock argument into the xacro command
     robot_description_content = Command([
         PathJoinSubstitution([FindExecutable(name="xacro")]), " ",
         PathJoinSubstitution([FindPackageShare("diffdrive_arduino"), "urdf", "diffbot.urdf.xacro"]),
-        " use_gazebo:=", use_gazebo
+        " use_mock:=", use_mock,
     ])
 
     config_path = lambda pkg, folder, file: PathJoinSubstitution([FindPackageShare(pkg), folder, file])
 
-    # 2. Gazebo Specific Actions (Conditional)
-    gazebo = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([
-            PathJoinSubstitution([FindPackageShare('gazebo_ros'), 'launch', 'gazebo.launch.py'])
-        ]),
-        condition=IfCondition(use_gazebo) # Only start Gazebo if use_gazebo is true
-    )
+    nodes = [        
+        declare_use_mock,
 
-    spawn_entity = Node(
-        package='gazebo_ros',
-        executable='spawn_entity.py',
-        arguments=['-topic', 'robot_description', '-entity', 'diffbot'],
-        output='screen',
-        condition=IfCondition(use_gazebo) # Only spawn if use_gazebo is true
-    )
-
-    # 3. Standard Nodes
-    nodes = [
-        use_gazebo_arg,
-        gazebo,
-        spawn_entity,
-        
         Node(
             package="robot_state_publisher",
             executable="robot_state_publisher",
             parameters=[{"robot_description": robot_description_content}],
         ),
 
-        # Only runs for REAL hardware
         Node(
             package="controller_manager",
             executable="ros2_control_node",
             parameters=[{"robot_description": robot_description_content}, 
                         config_path("diffdrive_arduino", "config", "diffbot_controllers.yaml")],
-            condition=UnlessCondition(use_gazebo)
+            output="both",
         ),
 
         Node(package="controller_manager", executable="spawner", arguments=["joint_state_broadcaster"]),

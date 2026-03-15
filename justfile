@@ -53,7 +53,7 @@ lspawn:
     ros2 run gazebo_ros spawn_entity.py  -topic robot_description -entity my_bot
 
 ldiffbot:
-    ros2 launch diffdrive_arduino diffbot.launch.py use_gazebo:=true
+    ros2 launch diffdrive_arduino diffbot.launch.py use_mock:=true
 
 lk:
     ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -r /cmd_vel:=/diffbot_base_controller/cmd_vel_unstamped -p use_sim_time:=true

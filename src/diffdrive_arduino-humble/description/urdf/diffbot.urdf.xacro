@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <!-- Basic differential drive mobile base -->
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="diffdrive_robot">
+  <xacro:arg name="use_mock" default="true" />
   <xacro:arg name="prefix" default="" />
 
   <xacro:include filename="$(find diffdrive_arduino)/urdf/diffbot_description.urdf.xacro" />
@@ -13,12 +14,8 @@
 
   <xacro:diffbot prefix="$(arg prefix)" />
 
-  <xacro:diffbot_ros2_control
-    name="DiffBot" prefix="$(arg prefix)" />
-
-  <gazebo>
-      <plugin name="gazebo_ros2_control" filename="libgazebo_ros2_control.so">
-          <parameters>$(find diffdrive_arduino)/config/diffbot_controllers.yaml</parameters>
-      </plugin>
-  </gazebo>
+  <xacro:diffbot_ros2_control 
+    name="DiffBot" 
+    prefix="" 
+    use_mock="$(arg use_mock)" />
 </robot>
