@@ -1,9 +1,9 @@
 <library path="diffdrive_arduino">
-  <class name="diffdrive_arduino/DiffDriveArduinoHardware"
-         type="diffdrive_arduino::DiffDriveArduinoHardware"
+  <class name="diffdrive_arduino/DiffBotMicroRos"
+         type="diffbot_micro_ros::DiffBotMicroRos"
          base_class_type="hardware_interface::SystemInterface">
     <description>
-      The ros2_control DiffBot example using a system hardware interface-type. It uses velocity command and position state interface. The example is the starting point to implement a hardware interface for differential-drive mobile robots.
+        Micro-ros for ESP32 hardware interface. Eurobot team EIRBOT
     </description>
   </class>
 </library>

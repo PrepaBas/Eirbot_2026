@@ -5,9 +5,9 @@
   <version>1.0.0</version>
   <description>Hardware interface for ESP32 via micro-ROS. Eurobot team EIRBOT</description>
 
-  <maintainer email="bastien.tran.33@gmail.com ">Bastien Tran</maintainer>
+  <maintainer email="bastien.tran.33@gmail.com">Bastien Tran</maintainer>
 
-  <author email="bastien.tran.33@gmail.com ">Bastien Tran</author>
+  <author email="bastien.tran.33@gmail.com">Bastien Tran</author>
 
   <license>Apache-2.0</license>
 
