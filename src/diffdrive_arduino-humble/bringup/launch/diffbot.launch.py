@@ -38,6 +38,7 @@ def generate_launch_description():
             executable="ros2_control_node",
             parameters=[{"robot_description": robot_description_content}, 
                         config_path("diffdrive_arduino", "config", "diffbot_controllers.yaml")],
+            remappings=[("~/odom", "/odom")],
             output="both",
         ),
 

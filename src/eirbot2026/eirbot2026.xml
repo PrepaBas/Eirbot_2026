@@ -1,5 +1,0 @@
-<library path="eirbot2026">
-<class name="arduino_controller/ArduinoInterface" type="arduino_controller::ArduinoInterface" base_class_type="hardware_interface::SystemInterface">
-<description> Arduino Hardware Interface </description>
-</class>
-</library>
