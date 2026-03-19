@@ -11,7 +11,7 @@ def generate_launch_description():
     pkg_navigation = get_package_share_directory('diffbot_navigation')
     pkg_nav2_bringup = get_package_share_directory('nav2_bringup')
 
-    use_sim_time = LaunchConfiguration('use_sim_time', default='true')
+    use_sim_time = LaunchConfiguration('use_sim_time', default='false')
     autostart = LaunchConfiguration('autostart', default='true')
     
     map_yaml_file = os.path.join(pkg_navigation, 'maps', 'eurobot_table.yaml')
@@ -47,7 +47,7 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
-        DeclareLaunchArgument('use_sim_time', default_value='true'),
+        DeclareLaunchArgument('use_sim_time', default_value='false'),
         nav2_with_remappings, # Use the group here
         static_tf_node 
     ])

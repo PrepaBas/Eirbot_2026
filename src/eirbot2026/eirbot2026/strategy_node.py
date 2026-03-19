@@ -17,7 +17,7 @@ class StrategyNode(Node):
         self.obstacle_pub = self.create_publisher(PointCloud2, '/virtual_obstacles', 10)
         
         # --- State Variables ---
-        self.sequence = [(1.0, 1.0), (2.0, 1.0), (2.0, 2.0), (1.0, 2.0)]
+        self.sequence = [(0.5, 0.5), (0.5, 1.5), (2.5, 1.5), (2.5, 0.5), (0.5, 0.5)]  # Example sequence of goals
         self.current_step = 0
         self.is_moving = False
         self.match_finished = False
@@ -51,9 +51,16 @@ class StrategyNode(Node):
             x_base, y_base = self.game_elements[name]
             for dx in [-0.05, 0.0, 0.05]:
                 for dy in [-0.05, 0.0, 0.05]:
-                    points.append([x_base + dx, y_base + dy, 0.0])
+                    points.append([float(x_base + dx), float(y_base + dy), 0.0])
+            
+            if not points:
+                return
+
+        # Use 'map' as the frame since your coordinates are absolute table coords
+        header = Header()
+        header.stamp = self.get_clock().now().to_msg()
+        header.frame_id = "map" 
         
-        header = Header(stamp=self.get_clock().now().to_msg(), frame_id="map")
         cloud = pc2.create_cloud_xyz32(header, points)
         self.obstacle_pub.publish(cloud)
 
