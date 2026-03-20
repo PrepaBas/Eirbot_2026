@@ -45,16 +45,12 @@ RUN apt update && apt install -y \
 
 RUN apt update && apt install -y \
     ros-humble-xacro \
-    ros-humble-gazebo-ros \
-    ros-humble-gazebo-ros-pkgs \
-    ros-humble-gazebo-ros2-control \
     ros-humble-ros2-control \
     ros-humble-ros2-controllers \
     ros-humble-joint-state-publisher \
     ros-humble-joint-state-publisher-gui \
     ros-humble-navigation2 \
     ros-humble-nav2-bringup \
-    ros-humble-turtlebot3-gazebo \
     && rm -rf /var/lib/apt/lists/*
 
 # install Just
