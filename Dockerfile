@@ -1,5 +1,5 @@
 # Utilisation de l'image officielle pré-configurée (Ubuntu 22.04 + ROS Humble Desktop)
-FROM --platform=linux/arm34 osrf/ros:humble-desktop
+FROM --platform=linux/arm64 osrf/ros:humble-desktop
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=UTC
