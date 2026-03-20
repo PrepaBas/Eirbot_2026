@@ -9,27 +9,6 @@ def generate_launch_description():
     # 1. Setup Substitutions
     use_gazebo = LaunchConfiguration('use_gazebo')
 
-    # 1. Include the Gazebo Launch
-    gazebo = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([
-            PathJoinSubstitution([FindPackageShare('gazebo_ros'), 'launch', 'gazebo.launch.py'])
-        ]),
-        launch_arguments={'pause': 'false'}.items()
-    )
-
-    # 2. Spawn the Robot in Gazebo
-    spawn_entity = Node(
-        package='gazebo_ros',
-        executable='spawn_entity.py',
-        arguments=['-topic', 'robot_description', '-entity', 'diffbot'],
-        output='screen',
-    )
-    robot_description_content = Command([
-        PathJoinSubstitution([FindExecutable(name="xacro")]), " ",
-        PathJoinSubstitution([FindPackageShare("diffdrive_arduino"), "urdf", "diffbot.urdf.xacro"]),
-        " use_gazebo:=", use_gazebo
-    ])
-
     config_path = lambda pkg, folder, file: PathJoinSubstitution([FindPackageShare(pkg), folder, file])
 
     # 2. Define Nodes

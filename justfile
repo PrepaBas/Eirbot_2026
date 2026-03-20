@@ -36,6 +36,11 @@ nd:
 bd:
     docker build -t ros2_container .
 
+bdm:
+  docker buildx build --platform linux/arm64 \
+  -t ros2_container:latest \
+  --output type=docker,dest=image_robot.tar .
+
 rosdep:
     sudo rosdep update \
     rosdep install --from-paths src --ignore-src -y

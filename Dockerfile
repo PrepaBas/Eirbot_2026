@@ -69,22 +69,32 @@ RUN groupadd -g $GID $USERNAME && \
     useradd -m -u $UID -g $GID -s /bin/bash $USERNAME && \
     echo "$USERNAME ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
-# ROSDEP
-USER root
-RUN rosdep init
-USER ros
-RUN rosdep update
+# 5. Préparation de l'espace de travail
 WORKDIR /home/ros/ros2_ws
-COPY --chown=ros:ros src ./src
-RUN sudo apt-get update && \
-    rosdep install --from-paths src --ignore-src -y && \
-    sudo rm -rf /var/lib/apt/lists/*
 
-# Définit l'entrypoint pour que ROS soit sourcé même en mode non-interactif
+# On copie le code source
+COPY --chown=ros:ros src ./src
+
+# --- RÉPARATION DE ROSDEP ---
+RUN sudo rosdep init
+
+USER root
+RUN rosdep update
+
+USER root
+RUN apt-get update && \
+    rosdep install --from-paths src --ignore-src -y && \
+    rm -rf /var/lib/apt/lists/*
+
+# On repasse en utilisateur ROS pour la suite
+USER ros
+# ----------------------------
+    
+# 6. Entrypoint
+USER root
 COPY ./ros_entrypoint.sh /
-RUN sudo chmod +x /ros_entrypoint.sh
+RUN chmod +x /ros_entrypoint.sh
 ENTRYPOINT ["/ros_entrypoint.sh"]
 
 USER ros
-
 CMD ["bash"]
