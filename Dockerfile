@@ -84,7 +84,6 @@ RUN sudo apt-get update && \
 COPY ./ros_entrypoint.sh /
 RUN sudo chmod +x /ros_entrypoint.sh
 ENTRYPOINT ["/ros_entrypoint.sh"]
-CMD ["bash"]
 
 USER ros
 
