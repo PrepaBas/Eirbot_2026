@@ -41,7 +41,6 @@ RUN apt update && apt install -y \
     python3-serial \
     python3-rosdep \
     python3-argcomplete \
-    gazebo \
     && rm -rf /var/lib/apt/lists/*
 
 RUN apt update && apt install -y \
