@@ -17,17 +17,38 @@ class StrategyNode(Node):
         self.obstacle_pub = self.create_publisher(PointCloud2, '/virtual_obstacles', 10)
         
         # --- State Variables ---
-        self.sequence = [(0.5, 0.5), (0.5, 1.5), (2.5, 1.5), (2.5, 0.5), (0.5, 0.5)]  # Example sequence of goals
+        self.sequence = [(1.2, 1.75), (-1.2, 1.75)]  # Example sequence of goals
         self.current_step = 0
         self.is_moving = False
         self.match_finished = False
         
         # Game Data
         self.game_elements = {
-            "cylinder_1": (1.2, 0.5),
-            "cylinder_2": (1.5, 1.0)
+            "store_1": (0, 0.1),
+            "store_2": (0.8, 0.1),
+            "store_3": (0, 0.8),
+            "store_4": (0.7, 0.8),
+            "store_5": (1.4, 0.8),
+
+
+            "store_2m": (-0.8, 0.1),
+            "store_4m": (-0.7, 0.8),
+            "store_5m": (-1.4, 0.8),
+
+            "load_h1": (0.400, 0.175),
+            "load_h2": (0.35, 0.8),
+
+            "load_h1m": (-0.400, 0.175),
+            "load_h2m": (-0.35, 0.8),
+
+            "load_v1" : (1.35, 0.400),
+            "load_v2" : (1.35, 1.2),
+            "load_v1m" : (-1.35, 0.400),
+            "load_v2m" : (-1.35, 1.2),
         }
-        self.active_obstacles = ["cylinder_1", "cylinder_2"]
+        self.active_obstacles_store = ["store_1", "store_2", "store_3", "store_4", "store_5", "store_2m", "store_4m", "store_5m" ]
+        self.active_obstacles_vload = ["load_v1", "load_v2", "load_v1m", "load_v2m"]
+        self.active_obstacles_hload = ["load_h1", "load_h2", "load_h1m", "load_h2m"]
         
         # --- Timers ---
         self.start_time = self.get_clock().now()
@@ -47,14 +68,24 @@ class StrategyNode(Node):
     def publish_virtual_walls(self):
         """Publishes coordinates for Nav2 to avoid."""
         points = []
-        for name in self.active_obstacles:
+        for name in self.active_obstacles_store:
             x_base, y_base = self.game_elements[name]
-            for dx in [-0.05, 0.0, 0.05]:
-                for dy in [-0.05, 0.0, 0.05]:
+            for dx in [-0.1, 0.0, 0.1]:
+                for dy in [-0.1, 0.0, 0.1]:
                     points.append([float(x_base + dx), float(y_base + dy), 0.0])
-            
-            if not points:
-                return
+                        
+        for name in self.active_obstacles_hload:
+            x_base, y_base = self.game_elements[name]
+            for dx in [-0.1, 0.0, 0.1]:
+                for dy in [-0.075, 0.0, 0.075]:
+                    points.append([float(x_base + dx), float(y_base + dy), 0.0])
+        
+        for name in self.active_obstacles_vload:
+            x_base, y_base = self.game_elements[name]
+            for dx in [-0.075, 0.0, 0.075]:
+                for dy in [-0.1, 0.0, 0.1]:
+                    points.append([float(x_base + dx), float(y_base + dy), 0.0])
+
 
         # Use 'map' as the frame since your coordinates are absolute table coords
         header = Header()
@@ -105,9 +136,9 @@ class StrategyNode(Node):
         self.get_logger().info(f"Step {self.current_step} complete!")
         
         # Example: Remove the obstacle after reaching the first goal
-        if self.current_step == 0 and "cylinder_1" in self.active_obstacles:
-            self.active_obstacles.remove("cylinder_1")
-            self.get_logger().info("Cylinder 1 cleared from map!")
+        if self.current_step == 0 and "store_1" in self.active_obstacles_store:
+            self.active_obstacles_store.remove("store_1")
+            self.get_logger().info("Store 1 cleared from map!")
 
         self.is_moving = False
         self.current_step += 1

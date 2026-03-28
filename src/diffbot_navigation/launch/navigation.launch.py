@@ -3,44 +3,62 @@ from launch_ros.actions import Node, SetRemap
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, GroupAction
+from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, PythonExpression
+from nav2_common.launch import RewrittenYaml # <--- AJOUTER CECI
 
 def generate_launch_description():
     pkg_navigation = get_package_share_directory('diffbot_navigation')
     pkg_nav2_bringup = get_package_share_directory('nav2_bringup')
+    map_yaml_file = os.path.join(pkg_navigation, 'maps', 'eurobot_table.yaml')
 
-    # Configuration Nav2
+    # Arguments
     use_sim_time = LaunchConfiguration('use_sim_time')
     autostart = LaunchConfiguration('autostart')
-    map_yaml_file = os.path.join(pkg_navigation, 'maps', 'eurobot_table.yaml')
-    params_file = os.path.join(pkg_navigation, 'config', 'nav2_params.yaml')
+    params_file = LaunchConfiguration('params_file')
+    mode = LaunchConfiguration('mode')
+    start_pos = LaunchConfiguration('start_pos')
+    
+    # 1. Déclaration des arguments
+    declare_mode_arg = DeclareLaunchArgument(
+        'mode', default_value='static', 
+        description='Localization mode: "static" or "amcl"')
 
-    # 1. Déclaration des arguments de position (INDISPENSABLE dans le return final)
-    declare_x_arg = DeclareLaunchArgument('x', default_value='1.5', description='Start X')
-    declare_y_arg = DeclareLaunchArgument('y', default_value='0.5', description='Start Y')
-    declare_yaw_arg = DeclareLaunchArgument('yaw', default_value='1.57', description='Start Yaw (rad)')
-    declare_use_sim_time_arg = DeclareLaunchArgument('use_sim_time', default_value='false')
-    declare_autostart_arg = DeclareLaunchArgument('autostart', default_value='true')
+    declare_start_pos_arg = DeclareLaunchArgument(
+        'start_pos', default_value='pos1',
+        description='Starting position: "pos1" or "pos2"')
 
-    # 2. Static TF Publisher (Map -> Odom)
-    # L'ordre est : x y z yaw pitch roll frame_id child_frame_id
+    # Coordonnées dynamiques pour le Static TF
+    x_val = PythonExpression(["'-1.2' if '", start_pos, "' == 'pos1' else '1.2'"])
+    y_val = '1.75'
+    yaw_val = '-1.75'
+
+    # 2. Logique de modification du YAML (La partie magique)
+    # On définit ce qu'on veut écraser dans le fichier original
+    param_substitutions = {
+        'global_frame': PythonExpression(["'map' if '", mode, "' == 'static' else 'odom'"]),
+        'use_sim_time': use_sim_time
+    }
+
+    # On crée un nouveau fichier temporaire réécrit
+    configured_params = RewrittenYaml(
+        source_file=params_file,
+        root_key='',
+        param_rewrites=param_substitutions,
+        convert_types=True)
+
+    # 3. Static TF Publisher (Uniquement en mode static)
     static_tf_node = Node(
+        condition=IfCondition(PythonExpression(["'", mode, "' == 'static'"])),
         package='tf2_ros',
         executable='static_transform_publisher',
         name='map_to_odom_node',
-        arguments=[
-            LaunchConfiguration('x'), 
-            LaunchConfiguration('y'), 
-            '0', # Z
-            LaunchConfiguration('yaw'), 
-            '0', '0', # Pitch / Roll
-            'map', 'odom'
-        ]
+        arguments=[x_val, y_val, '0', yaw_val, '0', '0', 'map', 'odom']
     )
 
-    # 3. Groupe Nav2 avec Remappings
-    nav2_with_remappings = GroupAction(
+    # 4. Groupe Nav2
+    nav2_bringup = GroupAction(
         actions=[
             SetRemap(src='/cmd_vel', dst='/diffbot_base_controller/cmd_vel_unstamped'),
             
@@ -51,23 +69,21 @@ def generate_launch_description():
                 launch_arguments={
                     'map': map_yaml_file,
                     'use_sim_time': use_sim_time,
-                    'params_file': params_file,
                     'autostart': autostart,
-                    'use_amcl': 'False', # On n'utilise pas de Lidar
-                    'use_composition': 'True', # Recommandé pour Raspberry Pi
-                    'use_namespace': 'False'
+                    'use_amcl': PythonExpression(["'False' if '", mode, "' == 'static' else 'True'"]),
+                    'params_file': configured_params, # <--- ON PASSE LE FICHIER RÉÉCRIT
+                    'use_composition': 'True',
                 }.items()
             ),
         ]
     )
-
-    # 4. Retour de la description (Tous les DeclareLaunchArgument DOIVENT être ici)
+    
     return LaunchDescription([
-        declare_x_arg,
-        declare_y_arg,
-        declare_yaw_arg,
-        declare_use_sim_time_arg,
-        declare_autostart_arg,
+        declare_mode_arg,
+        declare_start_pos_arg,
+        DeclareLaunchArgument('use_sim_time', default_value='false'),
+        DeclareLaunchArgument('autostart', default_value='true'),
+        DeclareLaunchArgument('params_file', default_value=os.path.join(pkg_navigation, 'config', 'nav2_params.yaml')),
         static_tf_node,
-        nav2_with_remappings
+        nav2_bringup
     ])

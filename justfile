@@ -68,3 +68,9 @@ lk:
 
 lura:
     ros2 run micro_ros_agent micro_ros_agent serial --dev /dev/ttyUSB0 -v6
+
+ssh:
+    ssh natch@10.19.129.201
+
+fscan:
+    ros2 topic pub /scan sensor_msgs/msg/LaserScan "{header: {stamp: now, frame_id: 'laser_frame'}, angle_min: 0.0, angle_max: 6.28, angle_increment: 0.1, time_increment: 0.0, scan_time: 0.1, range_min: 0.0, range_max: 10.0, ranges: [5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0]}"

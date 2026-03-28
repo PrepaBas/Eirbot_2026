@@ -81,9 +81,13 @@ RUN sudo rosdep init
 USER root
 RUN rosdep update
 
+# Dans ton Dockerfile, remplace l'étape rosdep par celle-ci :
 USER root
 RUN apt-get update && \
-    rosdep install --from-paths src --ignore-src -y && \
+    (rosdep init || true) && \
+    sudo -u ros rosdep update && \
+    rosdep install --from-paths src --ignore-src -y \
+    --skip-keys "gazebo_ros2_control gazebo_ros_pkgs gazebo_ros" && \
     rm -rf /var/lib/apt/lists/*
 
 # On repasse en utilisateur ROS pour la suite
