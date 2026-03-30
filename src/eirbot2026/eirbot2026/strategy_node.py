@@ -29,11 +29,13 @@ class StrategyNode(Node):
             "store_3": (0, 0.8),
             "store_4": (0.7, 0.8),
             "store_5": (1.4, 0.8),
+            "store_6": (0.25, 1.45),
 
 
             "store_2m": (-0.8, 0.1),
             "store_4m": (-0.7, 0.8),
             "store_5m": (-1.4, 0.8),
+            "store_6m": (-0.25, 1.45),
 
             "load_h1": (0.400, 0.175),
             "load_h2": (0.35, 0.8),
@@ -46,7 +48,7 @@ class StrategyNode(Node):
             "load_v1m" : (-1.35, 0.400),
             "load_v2m" : (-1.35, 1.2),
         }
-        self.active_obstacles_store = ["store_1", "store_2", "store_3", "store_4", "store_5", "store_2m", "store_4m", "store_5m" ]
+        self.active_obstacles_store = ["store_1", "store_2", "store_3", "store_4", "store_5", "store_2m", "store_4m", "store_5m", "store_6", "store_6m" ]
         self.active_obstacles_vload = ["load_v1", "load_v2", "load_v1m", "load_v2m"]
         self.active_obstacles_hload = ["load_h1", "load_h2", "load_h1m", "load_h2m"]
         

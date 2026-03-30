@@ -3,7 +3,7 @@
 
 #include "hardware_interface/system_interface.hpp"
 #include "rclcpp/rclcpp.hpp"
-#include "std_msgs/msg/float64_multi_array.hpp"
+#include "geometry_msgs/msg/twist.hpp"
 #include "sensor_msgs/msg/joint_state.hpp"
 
 namespace diffbot_micro_ros

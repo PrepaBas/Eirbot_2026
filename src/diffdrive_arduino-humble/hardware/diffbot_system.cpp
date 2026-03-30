@@ -64,14 +64,21 @@ return_type DiffBotMicroRos::read(const rclcpp::Time & /*time*/, const rclcpp::D
 
 return_type DiffBotMicroRos::write(const rclcpp::Time & /*time*/, const rclcpp::Duration & /*period*/)
 {
-  // Take the pointers from the controller and publish them to micro-ROS
-  auto msg = std_msgs::msg::Float64MultiArray();
-  msg.data = {hw_commands_[0], hw_commands_[1]};
+  // The diff_drive_controller calculates separate wheel velocities (hw_commands_).
+  // We convert them back to V and W to send a single Twist message to the ESP32.
+  auto msg = geometry_msgs::msg::Twist();
+  
+  float v_left = hw_commands_[0];
+  float v_right = hw_commands_[1];
+
+  // Forward Kinematics to get robot-level commands
+  msg.linear.x = (v_right + v_left) / 2.0;
+  msg.angular.z = (v_right - v_left) / 0.155; // Using WHEEL_BASE
+
   cmd_pub_->publish(msg);
   
   return return_type::OK;
 }
-
 } // namespace diffbot_micro_ros
 
 #include "pluginlib/class_list_macros.hpp"
