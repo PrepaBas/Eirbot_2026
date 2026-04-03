@@ -9,12 +9,6 @@ build:
     cd ~/ros2_ws 
     colcon build --symlink-install --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DPython_FIND_VIRTUALENV=ONLY -DPython3_FIND_VIRTUALENV=ONLY
 
-#lns:
-#    ros2 run diffbot_control diff_drive_node --ros-args -p use_sim:=false -p esp_port:=/dev/ttyUSB0
-
-#lys:
-#    ros2 run diffbot_control diff_drive_node --ros-args -p use_sim:=true 
-
 sd:
     docker run -it \
     --net=host \
@@ -51,17 +45,14 @@ rmd:
 screen:
     xhost +local:root
 
-lgazebo:
-    ros2 launch gazebo_ros gazebo.launch.py 
-
 lspawn:
     ros2 run gazebo_ros spawn_entity.py  -topic robot_description -entity my_bot
 
-ldiffbotm:
-    ros2 launch diffdrive_arduino diffbot.launch.py use_mock:=true
+basem:
+    ros2 launch eirbot_base eirbot_base.launch.py use_mock:=true
 
-ldiffbotr:
-    ros2 launch diffdrive_arduino diffbot.launch.py use_mock:=false
+baser:
+    ros2 launch eirbot_base eirbot_base.launch.py use_mock:=false
 
 lk:
     ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -r /cmd_vel:=/diffbot_base_controller/cmd_vel_unstamped -p use_sim_time:=true
@@ -71,6 +62,3 @@ lura:
 
 ssh:
     ssh natch@10.19.129.201
-
-fscan:
-    ros2 topic pub /scan sensor_msgs/msg/LaserScan "{header: {stamp: now, frame_id: 'laser_frame'}, angle_min: 0.0, angle_max: 6.28, angle_increment: 0.1, time_increment: 0.0, scan_time: 0.1, range_min: 0.0, range_max: 10.0, ranges: [5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0]}"

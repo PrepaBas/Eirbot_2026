@@ -1,9 +1,0 @@
-<library path="diffdrive_arduino">
-  <class name="diffdrive_arduino/DiffBotMicroRos"
-         type="diffbot_micro_ros::DiffBotMicroRos"
-         base_class_type="hardware_interface::SystemInterface">
-    <description>
-        Micro-ros for ESP32 hardware interface. Eurobot team EIRBOT
-    </description>
-  </class>
-</library>

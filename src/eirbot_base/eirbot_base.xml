@@ -1,0 +1,9 @@
+<library path="eirbot_base/hardware/include/eirbot_base/eirbot_base.hpp">
+    <class name="eirbot_base/EirbotBase"
+         type="eirbot_base::EirbotBase"
+         base_class_type="hardware_interface::SystemInterface">
+      <description>
+        Base class for EIRBOT hardware interfaces. Eurobot team EIRBOT
+      </description>
+    </class>
+</library>

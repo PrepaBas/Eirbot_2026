@@ -1,11 +1,11 @@
-#include "diffbot_system.hpp"
+#include "eirbot_base.hpp"
 #include "hardware_interface/types/hardware_interface_type_values.hpp"
 #include "rclcpp/rclcpp.hpp"
 
-namespace diffbot_micro_ros
+namespace eirbot_micro_ros
 {
 
-CallbackReturn DiffBotMicroRos::on_init(const hardware_interface::HardwareInfo & info)
+CallbackReturn EirBotMicroRos::on_init(const hardware_interface::HardwareInfo & info)
 {
   if (hardware_interface::SystemInterface::on_init(info) != CallbackReturn::SUCCESS) {
     return CallbackReturn::ERROR;
@@ -39,7 +39,7 @@ CallbackReturn DiffBotMicroRos::on_init(const hardware_interface::HardwareInfo &
   return CallbackReturn::SUCCESS;
 }
 
-std::vector<hardware_interface::StateInterface> DiffBotMicroRos::export_state_interfaces()
+std::vector<hardware_interface::StateInterface> EirBotMicroRos::export_state_interfaces()
 {
   std::vector<hardware_interface::StateInterface> state_interfaces;
   for (size_t i = 0; i < info_.joints.size(); i++) {
@@ -49,7 +49,7 @@ std::vector<hardware_interface::StateInterface> DiffBotMicroRos::export_state_in
   return state_interfaces;
 }
 
-std::vector<hardware_interface::CommandInterface> DiffBotMicroRos::export_command_interfaces()
+std::vector<hardware_interface::CommandInterface> EirBotMicroRos::export_command_interfaces()
 {
   std::vector<hardware_interface::CommandInterface> command_interfaces;
   for (size_t i = 0; i < info_.joints.size(); i++) {
@@ -58,14 +58,14 @@ std::vector<hardware_interface::CommandInterface> DiffBotMicroRos::export_comman
   return command_interfaces;
 }
 
-return_type DiffBotMicroRos::read(const rclcpp::Time & /*time*/, const rclcpp::Duration & /*period*/)
+return_type EirBotMicroRos::read(const rclcpp::Time & /*time*/, const rclcpp::Duration & /*period*/)
 {
   // Process incoming subscriber messages
   rclcpp::spin_some(node_);
   return return_type::OK;
 }
 
-return_type DiffBotMicroRos::write(const rclcpp::Time & /*time*/, const rclcpp::Duration & /*period*/)
+return_type EirBotMicroRos::write(const rclcpp::Time & /*time*/, const rclcpp::Duration & /*period*/)
 {
   // 1. Get commands from the diff_drive_controller (in rad/s per wheel)
   double v_left = hw_commands_[0];
@@ -83,7 +83,7 @@ return_type DiffBotMicroRos::write(const rclcpp::Time & /*time*/, const rclcpp::
   return return_type::OK;
 }
 
-} // namespace diffbot_micro_ros
+} // namespace eirbot_micro_ros
 
 #include "pluginlib/class_list_macros.hpp"
-PLUGINLIB_EXPORT_CLASS(diffbot_micro_ros::DiffBotMicroRos, hardware_interface::SystemInterface)
+PLUGINLIB_EXPORT_CLASS(eirbot_micro_ros::EirBotMicroRos, hardware_interface::SystemInterface)

@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!-- Basic differential drive mobile base -->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="eirbot_base">
+  <xacro:arg name="use_mock" default="true" />
+  <xacro:arg name="prefix" default="" />
+
+  <xacro:include filename="$(find eirbot_base)/urdf/robot_description.urdf.xacro" />
+
+  <!-- Import Rviz colors -->
+  <xacro:include filename="$(find eirbot_base)/urdf/robot.materials.xacro" />
+
+  <!-- Import eirbot ros2_control description -->
+  <xacro:include filename="$(find eirbot_base)/ros2_control/robot.ros2_control.xacro" />
+
+  <xacro:eirbot_base prefix="$(arg prefix)" />
+
+  <xacro:eirbot_ros2_control 
+    name="Eirbot" 
+    prefix="" 
+    use_mock="$(arg use_mock)" />
+</robot>

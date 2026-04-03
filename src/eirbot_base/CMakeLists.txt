@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(diffdrive_arduino LANGUAGES CXX)
+project(eirbot_base LANGUAGES CXX)
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "(GNU|Clang)")
   add_compile_options(-Wall -Wextra)
@@ -25,45 +25,45 @@ endforeach()
 
 ## COMPILE
 add_library(
-  diffdrive_arduino SHARED
-  hardware/diffbot_system.cpp
+  eirbot_base SHARED
+  hardware/eirbot_base.cpp
 )
 
-target_compile_features(diffdrive_arduino PUBLIC cxx_std_17)
-target_include_directories(diffdrive_arduino PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/hardware/include/diffdrive_arduino>
-  $<INSTALL_INTERFACE:include/diffdrive_arduino>
+target_compile_features(eirbot_base PUBLIC cxx_std_17)
+target_include_directories(eirbot_base PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/hardware/include/eirbot_base>
+  $<INSTALL_INTERFACE:include/eirbot_base>
 )
 
 ament_target_dependencies(
-  diffdrive_arduino PUBLIC
+  eirbot_base PUBLIC
   ${THIS_PACKAGE_INCLUDE_DEPENDS}
 )
 
-target_link_libraries(diffdrive_arduino PUBLIC )
+target_link_libraries(eirbot_base PUBLIC )
 
 # Causes the visibility macros to use dllexport rather than dllimport,
 # which is appropriate when building the dll but not consuming it.
 # target_compile_definitions(${PROJECT_NAME} PRIVATE "DIFFDRIVE_ARDUINO_BUILDING_DLL")
 
 # Export hardware plugins
-pluginlib_export_plugin_description_file(hardware_interface diffdrive_arduino.xml)
+pluginlib_export_plugin_description_file(hardware_interface eirbot_base.xml)
 
 # INSTALL
 install(
   DIRECTORY hardware/include/
-  DESTINATION include/diffdrive_arduino
+  DESTINATION include/eirbot_base
 )
 install(
-  DIRECTORY description/launch description/ros2_control description/urdf description/rviz
-  DESTINATION share/diffdrive_arduino
+  DIRECTORY description/ros2_control description/urdf description/rviz
+  DESTINATION share/eirbot_base
 )
 install(
-  DIRECTORY bringup/launch bringup/config
-  DESTINATION share/diffdrive_arduino
+  DIRECTORY launch config
+  DESTINATION share/eirbot_base
 )
-install(TARGETS diffdrive_arduino
-  EXPORT export_diffdrive_arduino
+install(TARGETS eirbot_base
+  EXPORT export_eirbot_base
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin
@@ -74,6 +74,6 @@ if(BUILD_TESTING)
 endif()
 
 ## EXPORTS
-ament_export_targets(export_diffdrive_arduino HAS_LIBRARY_TARGET)
+ament_export_targets(export_eirbot_base HAS_LIBRARY_TARGET)
 ament_export_dependencies(${THIS_PACKAGE_INCLUDE_DEPENDS})
 ament_package()

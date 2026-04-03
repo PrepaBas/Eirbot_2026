@@ -1,5 +1,5 @@
-#ifndef DIFFBOT_MICRO_ROS_HPP
-#define DIFFBOT_MICRO_ROS_HPP
+#ifndef EIRBOT_MICRO_ROS_HPP
+#define EIRBOT_MICRO_ROS_HPP
 
 #include <memory>
 #include <string>
@@ -17,12 +17,12 @@
 #include "geometry_msgs/msg/twist.hpp"
 #include "sensor_msgs/msg/joint_state.hpp"
 
-namespace diffbot_micro_ros
+namespace eirbot_micro_ros
 {
 using hardware_interface::CallbackReturn;
 using hardware_interface::return_type;
 
-class DiffBotMicroRos : public hardware_interface::SystemInterface
+class EirBotMicroRos : public hardware_interface::SystemInterface
 {
 public:
   CallbackReturn on_init(const hardware_interface::HardwareInfo & info) override;

@@ -18,11 +18,15 @@ def generate_launch_description():
     # Pass the use_mock argument into the xacro command
     robot_description_content = Command([
         PathJoinSubstitution([FindExecutable(name="xacro")]), " ",
-        PathJoinSubstitution([FindPackageShare("diffdrive_arduino"), "urdf", "diffbot.urdf.xacro"]),
+        PathJoinSubstitution([FindPackageShare("eirbot_base"), "urdf", "eirbot_base.urdf.xacro"]),
         " use_mock:=", use_mock,
     ])
 
     config_path = lambda pkg, folder, file: PathJoinSubstitution([FindPackageShare(pkg), folder, file])
+    
+    controller_param_file = PathJoinSubstitution(
+        [FindPackageShare("eirbot_base"), "config", "eirbot_base_controllers.yaml"]
+    )
 
     nodes = [        
         declare_use_mock,
@@ -37,19 +41,19 @@ def generate_launch_description():
             package="controller_manager",
             executable="ros2_control_node",
             parameters=[{"robot_description": robot_description_content}, 
-                        config_path("diffdrive_arduino", "config", "diffbot_controllers.yaml")],
+                        controller_param_file],
             remappings=[("~/odom", "/odom")],
             output="both",
         ),
 
         Node(package="controller_manager", executable="spawner", arguments=["joint_state_broadcaster"]),
-        Node(package="controller_manager", executable="spawner", arguments=["diffbot_base_controller"]),
+        Node(package="controller_manager", executable="spawner", arguments=["eirbot_base_controller"]),
 
-        Node(
-            package="rviz2",
-            executable="rviz2",
-            arguments=["-d", config_path("diffdrive_arduino", "rviz", "diffbot.rviz")],
-        ),
+        #Node(
+        #    package="rviz2",
+        #    executable="rviz2",
+        #    arguments=["-d", config_path("diffdrive_arduino", "rviz", "diffbot.rviz")],
+        #),
     ]
 
     return LaunchDescription(nodes)

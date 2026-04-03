@@ -6,10 +6,10 @@ from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, Grou
 from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PythonExpression
-from nav2_common.launch import RewrittenYaml # <--- AJOUTER CECI
+from nav2_common.launch import RewrittenYaml 
 
 def generate_launch_description():
-    pkg_navigation = get_package_share_directory('diffbot_navigation')
+    pkg_navigation = get_package_share_directory('eirbot_navigation')
     pkg_nav2_bringup = get_package_share_directory('nav2_bringup')
     map_yaml_file = os.path.join(pkg_navigation, 'maps', 'eurobot_table.yaml')
 

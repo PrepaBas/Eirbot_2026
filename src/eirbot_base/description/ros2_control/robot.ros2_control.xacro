@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-  <xacro:macro name="diffbot_ros2_control" params="name prefix use_mock:=true use_gazebo:=false">
+  <xacro:macro name="eirbot_ros2_control" params="name prefix use_mock:=true use_gazebo:=false">
     
     <ros2_control name="${name}" type="system">
       <hardware>      
@@ -12,7 +12,7 @@
 
         <xacro:unless value="${use_mock}">
           <xacro:unless value="${use_gazebo}">
-            <plugin>diffdrive_arduino/DiffBotMicroRos</plugin>
+            <plugin>eirbot_base/EirbotMicroRos</plugin>
             <param name="left_wheel_name">${prefix}left_wheel_joint</param>
             <param name="right_wheel_name">${prefix}right_wheel_joint</param>
             <param name="loop_rate">50</param>
