@@ -13,6 +13,7 @@ set(THIS_PACKAGE_INCLUDE_DEPENDS
   rclcpp_lifecycle
   std_msgs
   sensor_msgs
+  geometry_msgs
 )
 
 # find dependencies

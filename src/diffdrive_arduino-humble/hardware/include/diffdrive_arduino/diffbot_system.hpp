@@ -1,8 +1,19 @@
 #ifndef DIFFBOT_MICRO_ROS_HPP
 #define DIFFBOT_MICRO_ROS_HPP
 
+#include <memory>
+#include <string>
+#include <vector>
+
+#include "hardware_interface/handle.hpp"
+#include "hardware_interface/hardware_info.hpp"
 #include "hardware_interface/system_interface.hpp"
+#include "hardware_interface/types/hardware_interface_return_values.hpp"
 #include "rclcpp/rclcpp.hpp"
+#include "rclcpp_lifecycle/node_interfaces/lifecycle_node_interface.hpp"
+#include "rclcpp_lifecycle/state.hpp"
+
+// Message Headers
 #include "geometry_msgs/msg/twist.hpp"
 #include "sensor_msgs/msg/joint_state.hpp"
 
@@ -23,14 +34,18 @@ public:
 private:
   // micro-ROS Communication
   rclcpp::Node::SharedPtr node_;
-  rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr cmd_pub_;
+  rclcpp::Publisher<geometry_msgs::msg::Twist>::SharedPtr cmd_pub_;
   rclcpp::Subscription<sensor_msgs::msg::JointState>::SharedPtr state_sub_;
 
-  // Memory buffers for the Controller Manager (Pointers)
-  // Indices: 0 = Left, 1 = Right
+  // Memory buffers for the Controller Manager
+  // [0] = Left Wheel, [1] = Right Wheel
   std::vector<double> hw_commands_;
   std::vector<double> hw_positions_;
   std::vector<double> hw_velocities_;
+
+  // Robot Parameters
+  double wheel_base_ = 0.215; // Distance between wheels (meters)
 };
 } 
+
 #endif
