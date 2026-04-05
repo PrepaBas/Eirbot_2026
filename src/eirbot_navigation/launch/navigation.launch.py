@@ -60,7 +60,7 @@ def generate_launch_description():
     # 4. Groupe Nav2
     nav2_bringup = GroupAction(
         actions=[
-            SetRemap(src='/cmd_vel', dst='/diffbot_base_controller/cmd_vel_unstamped'),
+            SetRemap(src='/cmd_vel', dst='/eirbot_base_controller/cmd_vel_unstamped'),
             
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource(
