@@ -42,7 +42,6 @@ def generate_launch_description():
             executable="ros2_control_node",
             parameters=[{"robot_description": robot_description_content}, 
                         controller_param_file],
-            remappings=[("~/odom", "/odom")],
             output="both",
         ),
 

@@ -9,13 +9,16 @@
       </PipelineSequence>
       
       <Fallback name="RecoveryActions">
-        <Action ID="ClearEntireCostmap" name="ClearGlobalCostmap-Sub" service_name="global_costmap/clear_entirely_global_costmap"/>
-        <Action ID="ClearEntireCostmap" name="ClearLocalCostmap-Sub" service_name="local_costmap/clear_entirely_local_costmap"/>
+        <Action ID="ClearEntireCostmap"   
+                name="ClearGlobalCostmap-Sub" 
+                service_name="/global_costmap/clear_entirely_global_costmap"/>
+                
+        <Action ID="ClearEntireCostmap" 
+                name="ClearLocalCostmap-Sub" 
+                service_name="/local_costmap/clear_entirely_local_costmap"/>
         
         <Action ID="BackUp" backup_dist="0.20" backup_speed="0.10"/>
-        
         <Action ID="Spin" spin_dist="1.57"/>
-        
         <Action ID="Wait" wait_duration="2"/>
       </Fallback>
     </RecoveryNode>

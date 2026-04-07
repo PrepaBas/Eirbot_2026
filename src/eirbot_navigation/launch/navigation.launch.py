@@ -3,63 +3,39 @@ from launch_ros.actions import Node, SetRemap
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, GroupAction
-from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration, PythonExpression
+from launch.substitutions import LaunchConfiguration
 from nav2_common.launch import RewrittenYaml 
 
 def generate_launch_description():
+    # 1. Chemins des dossiers
     pkg_navigation = get_package_share_directory('eirbot_navigation')
     pkg_nav2_bringup = get_package_share_directory('nav2_bringup')
-    map_yaml_file = os.path.join(pkg_navigation, 'maps', 'eurobot_table.yaml')
-
-    # Arguments
-    use_sim_time = LaunchConfiguration('use_sim_time')
-    autostart = LaunchConfiguration('autostart')
-    params_file = LaunchConfiguration('params_file')
-    mode = LaunchConfiguration('mode')
-    start_pos = LaunchConfiguration('start_pos')
     
-    # 1. Déclaration des arguments
-    declare_mode_arg = DeclareLaunchArgument(
-        'mode', default_value='static', 
-        description='Localization mode: "static" or "amcl"')
+    map_yaml_file = os.path.join(pkg_navigation, 'maps', 'eurobot_table.yaml')
+    default_params_file = os.path.join(pkg_navigation, 'config', 'nav2_params.yaml')
 
-    declare_start_pos_arg = DeclareLaunchArgument(
-        'start_pos', default_value='pos1',
-        description='Starting position: "pos1" or "pos2"')
+    # 2. Arguments de lancement
+    use_sim_time = LaunchConfiguration('use_sim_time', default='false')
+    autostart = LaunchConfiguration('autostart', default='true')
+    params_file = LaunchConfiguration('params_file', default=default_params_file)
 
-    # Coordonnées dynamiques pour le Static TF
-    x_val = PythonExpression(["'-1.2' if '", start_pos, "' == 'pos1' else '1.2'"])
-    y_val = '1.75'
-    yaw_val = '-1.75'
-
-    # 2. Logique de modification du YAML (La partie magique)
-    # On définit ce qu'on veut écraser dans le fichier original
+    # 3. Réécriture des paramètres (Pour injecter use_sim_time proprement)
     param_substitutions = {
-        'global_frame': PythonExpression(["'map' if '", mode, "' == 'static' else 'odom'"]),
-        'use_sim_time': use_sim_time
+        'use_sim_time': use_sim_time,
+        'global_frame': 'map' # On s'assure que Nav2 travaille toujours dans le repère map
     }
 
-    # On crée un nouveau fichier temporaire réécrit
     configured_params = RewrittenYaml(
         source_file=params_file,
         root_key='',
         param_rewrites=param_substitutions,
         convert_types=True)
 
-    # 3. Static TF Publisher (Uniquement en mode static)
-    static_tf_node = Node(
-        condition=IfCondition(PythonExpression(["'", mode, "' == 'static'"])),
-        package='tf2_ros',
-        executable='static_transform_publisher',
-        name='map_to_odom_node',
-        arguments=[x_val, y_val, '0', yaw_val, '0', '0', 'map', 'odom']
-    )
-
-    # 4. Groupe Nav2
-    nav2_bringup = GroupAction(
+    # 4. Groupe Nav2 : On lance uniquement le nécessaire
+    nav2_stack = GroupAction(
         actions=[
+            # Remap du topic de commande vers ton contrôleur hardware
             SetRemap(src='/cmd_vel', dst='/eirbot_base_controller/cmd_vel_unstamped'),
             
             IncludeLaunchDescription(
@@ -70,20 +46,17 @@ def generate_launch_description():
                     'map': map_yaml_file,
                     'use_sim_time': use_sim_time,
                     'autostart': autostart,
-                    'use_amcl': PythonExpression(["'False' if '", mode, "' == 'static' else 'True'"]),
-                    'params_file': configured_params, # <--- ON PASSE LE FICHIER RÉÉCRIT
-                    'use_composition': 'True',
+                    'params_file': configured_params,
+                    'use_amcl': 'False',      # AMCL est désactivé ici
+                    'use_composition': 'True', # Recommandé pour réduire la charge CPU sur Pi
                 }.items()
             ),
         ]
     )
     
     return LaunchDescription([
-        declare_mode_arg,
-        declare_start_pos_arg,
         DeclareLaunchArgument('use_sim_time', default_value='false'),
         DeclareLaunchArgument('autostart', default_value='true'),
-        DeclareLaunchArgument('params_file', default_value=os.path.join(pkg_navigation, 'config', 'nav2_params.yaml')),
-        static_tf_node,
-        nav2_bringup
+        DeclareLaunchArgument('params_file', default_value=default_params_file),
+        nav2_stack
     ])

@@ -51,6 +51,7 @@ RUN apt update && apt install -y \
     ros-humble-joint-state-publisher-gui \
     ros-humble-navigation2 \
     ros-humble-nav2-bringup \
+    ros-humble-robot-localization \
     && rm -rf /var/lib/apt/lists/*
 
 # install Just
