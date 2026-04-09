@@ -12,6 +12,12 @@ ekf_filter_node:
     base_link_frame: base_link  
     world_frame: map           # L'EKF publiera le lien map -> odom
 
+    initial_state: [1.2,  1.7,  0.0,
+                    0.0,  0.0,  -1.57,
+                    0.1,  0.2,  0.3,
+                    0.0,  0.0,  0.0,
+                    0.0,  0.0,  0.0]
+
     # Configuration de l'Odométrie (Roues)
     # [x, y, z, 
     #  roll, pitch, yaw, 

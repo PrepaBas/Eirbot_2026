@@ -21,6 +21,7 @@ setup(
         
         # Inclusion de tous les fichiers .yaml du dossier config/ (pour l'EKF)
         (os.path.join('share', package_name, 'config'), glob('config/*.yaml')),
+        (os.path.join('share', package_name, 'config'), glob('config/*.rviz')),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
@@ -34,6 +35,7 @@ setup(
             # On garde le point d'entrée au cas où tu réutilises le script
             'pose_broadcaster = eirbot_localization.pose_broadcaster:main',
             'push_action = eirbot_localization.push_action_node:main',
+            'set_init_pose = eirbot_localization.set_init_pose:main',
         ],
     },
 )

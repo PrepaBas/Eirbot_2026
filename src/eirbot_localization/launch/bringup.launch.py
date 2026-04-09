@@ -41,5 +41,6 @@ def generate_launch_description():
             name='rviz2',
             arguments=['-d', os.path.join(pkg_local, 'config', 'eirbot.rviz')], # Si tu as un fichier de config
             output='screen'
-        )
+        ),
+
     ])

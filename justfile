@@ -62,3 +62,19 @@ lura:
 
 ssh:
     ssh natch@10.19.129.201
+
+localization:
+    sudo apt update \
+    sudo apt install ros-humble-robot-localization
+
+clone:
+    cd ~/ros2_ws/src \
+    git clone https://github.com/sherif1152/nav2-virtual-layer.git \
+    git clone -b $ROS_DISTRO https://github.com/micro-ROS/micro_ros_setup.git ./micro_ros_setup \
+    cd ~/ros2_ws \
+    sudo apt update && rosdep update \
+    rosdep install --from-paths src --ignore-src -r -y \
+    colcon build \
+    source install/setup.bash \
+    ros2 run micro_ros_setup create_agent_ws.sh \
+    ros2 run micro_ros_setup build_agent.sh \

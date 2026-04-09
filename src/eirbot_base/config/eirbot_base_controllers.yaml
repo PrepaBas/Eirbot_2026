@@ -49,9 +49,9 @@ eirbot_base_controller:
     angular.z.has_velocity_limits: true
     angular.z.has_acceleration_limits: true
     angular.z.has_jerk_limits: false
-    angular.z.max_velocity: 3.0
+    angular.z.max_velocity: 30.0
     #angular.z.min_velocity: -5.0
-    angular.z.max_acceleration: 5.0
+    angular.z.max_acceleration: 90.0
     #angular.z.min_acceleration: -7.2
     angular.z.max_jerk: 0.0
     angular.z.min_jerk: 0.0

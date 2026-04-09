@@ -8,7 +8,7 @@ import time
 class PushActionNode(Node):
     def __init__(self):
         super().__init__('push_action_node')
-        self.cmd_pub = self.create_publisher(Twist, '/cmd_vel', 10)
+        self.cmd_pub = self.create_publisher(Twist, '/eirbot_base_controller/cmd_vel_unstamped', 10)
         self.odom_sub = self.create_subscription(Odometry, '/odometry/filtered', self.odom_callback, 10)
         
         self.current_yaw = 0.0
