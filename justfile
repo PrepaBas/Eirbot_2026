@@ -86,3 +86,24 @@ clone:
 
 s:    
     source ~/ros2_ws/install/setup.bash
+
+
+# Simuler le bouton RESET - Côté BLEU
+reset-blue:
+    ros2 topic pub --once --qos-durability transient_local /hardware/switches std_msgs/msg/Int8MultiArray "{data: [0, 1, 1]}"
+
+# Simuler le bouton RESET - Côté ORANGE
+reset-orange:
+    ros2 topic pub --once --qos-durability transient_local /hardware/switches std_msgs/msg/Int8MultiArray "{data: [1, 1, 1]}"
+
+# Simuler l'état IDLE (Bouton relâché, tirette présente) - Côté BLEU
+idle:
+    ros2 topic pub --once --qos-durability transient_local /hardware/switches std_msgs/msg/Int8MultiArray "{data: [0, 0, 1]}"
+
+# Simuler le START (Tirette retirée) - Côté BLEU
+start-blue:
+    ros2 topic pub --once --qos-durability transient_local /hardware/switches std_msgs/msg/Int8MultiArray "{data: [0, 0, 0]}"
+
+# Simuler le START (Tirette retirée) - Côté ORANGE
+start-orange:
+    ros2 topic pub --once --qos-durability transient_local /hardware/switches std_msgs/msg/Int8MultiArray "{data: [1, 0, 0]}"
