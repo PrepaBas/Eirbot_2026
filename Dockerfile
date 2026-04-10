@@ -102,4 +102,8 @@ RUN chmod +x /ros_entrypoint.sh
 ENTRYPOINT ["/ros_entrypoint.sh"]
 
 USER ros
+# Source ROS Humble et le workspace dans le .bashrc
+RUN echo "source /opt/ros/humble/setup.bash" >> /home/ros/.bashrc && \
+    echo 'if [ -f "/home/ros/ros2_ws/install/setup.bash" ]; then source "/home/ros/ros2_ws/install/setup.bash"; fi' >> /home/ros/.bashrc
+    
 CMD ["bash"]
