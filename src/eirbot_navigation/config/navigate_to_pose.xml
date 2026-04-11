@@ -6,6 +6,10 @@
           <Action ID="ComputePathToPose" goal="{goal}" path="{path}" planner_id="GridBased"/>
         </RateController>
         <Action ID="FollowPath" path="{path}" controller_id="FollowPath"/>
+
+        <Action ID="Push" distance="0.4" speed="0.2" target_angle="-90.0" />
+        <Action ID="BackUp" backup_dist="0.4" backup_speed="0.30"/>
+
       </PipelineSequence>
       
       <Fallback name="RecoveryActions">

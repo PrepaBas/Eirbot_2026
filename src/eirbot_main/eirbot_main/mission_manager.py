@@ -1,3 +1,5 @@
+import os
+import math
 import rclpy
 from rclpy.node import Node
 from rclpy.qos import QoSProfile, DurabilityPolicy
@@ -6,7 +8,7 @@ from std_srvs.srv import Empty
 from robot_localization.srv import SetPose
 from nav2_msgs.action import NavigateToPose
 from rclpy.action import ActionClient
-import math
+from ament_index_python.packages import get_package_share_directory
 
 class MissionManager(Node):
     def __init__(self):
@@ -55,10 +57,10 @@ class MissionManager(Node):
         req.pose.header.stamp = self.get_clock().now().to_msg()
         if color == 0: # Bleu
             req.pose.pose.pose.position.x, req.pose.pose.pose.position.y = -1.20, 1.70
-            req.pose.pose.pose.orientation.w = 1.0
+            req.pose.pose.pose.orientation.w = -1.0
         else: # Orange
             req.pose.pose.pose.position.x, req.pose.pose.pose.position.y = 1.20, 1.70
-            req.pose.pose.pose.orientation.z, req.pose.pose.pose.orientation.w = 1.0, 0.0
+            req.pose.pose.pose.orientation.z, req.pose.pose.pose.orientation.w = -1.0, 0.0
         
         req.pose.pose.covariance = [1e-9 if i%7==0 else 0.0 for i in range(36)]
         self.ekf_client.call_async(req)
@@ -68,13 +70,23 @@ class MissionManager(Node):
         self.match_started = False
 
     def start_strategy(self):
+        nav_share = get_package_share_directory('eirbot_navigation')
+        bt_xml_path = os.path.join(nav_share, 'config', 'navigate_to_pose.xml')
+
         goal = NavigateToPose.Goal()
         goal.pose.header.frame_id = 'map'
-        goal.pose.pose.position.x = 0.0
-        goal.pose.pose.position.y = 1.0
+        
+        # On définit souvent une pose bidon ou la première pose de la mission
+        # car le Behavior Tree va prendre le relais pour la suite du fichier XML.
+        goal.pose.pose.position.x = 1.3
+        goal.pose.pose.position.y = 1.55
         goal.pose.pose.orientation.w = 1.0
         
-        self.get_logger().info('Sending goal to Nav2...')
+        # OPTIONNEL : Si tu veux forcer un fichier XML spécifique au moment du départ :
+        goal.behavior_tree = bt_xml_path
+
+        self.get_logger().info(f'Lancement du BT : {bt_xml_path}')
+        self.nav_client.wait_for_server()
         send_goal_future = self.nav_client.send_goal_async(goal)
         send_goal_future.add_done_callback(self.goal_response_callback)
 
