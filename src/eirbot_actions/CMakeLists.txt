@@ -36,10 +36,11 @@ target_link_libraries(push_action_bt_node_lib
 # On s'assure que le plugin exporte bien ses symboles pour être chargé par Nav2
 target_compile_definitions(push_action_bt_node_lib PRIVATE BT_PLUGIN_EXPORT)
 
-# 3. Installation des exécutables Python (Serveur d'action)
+# Installation du serveur d'action Python
 install(PROGRAMS
-  eirbot_actions/push_server.py
+  eirbot_actions/push_server.py  # <-- Vérifie que le chemin vers le fichier est exact
   DESTINATION lib/${PROJECT_NAME}
+  RENAME push_server             # <-- C'EST LA CLÉ : retire le .py à l'installation
 )
 
 # 4. Installation de la bibliothèque C++ (Plugin BT)

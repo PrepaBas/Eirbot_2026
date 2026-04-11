@@ -44,6 +44,13 @@ def generate_launch_description():
             output='screen'
         ),
 
+        Node(
+            package='eirbot_actions',
+            executable='push_server', # Assure-toi que c'est le nom défini dans ton setup.py ou CMakeLists
+            name='push_server',
+            output='screen',
+        ),
+
         # 5. Eirbot Mission Manager (Le cerveau)
         Node(package='eirbot_main', executable='mission_manager', output='screen'),
     ])
