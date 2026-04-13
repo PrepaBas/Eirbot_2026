@@ -2,7 +2,7 @@
 #include "hardware_interface/types/hardware_interface_type_values.hpp"
 #include "rclcpp/rclcpp.hpp"
 
-namespace eirbot_micro_ros
+namespace eirbot_base
 {
 
 CallbackReturn EirBotMicroRos::on_init(const hardware_interface::HardwareInfo & info)
@@ -76,4 +76,4 @@ return_type EirBotMicroRos::write(const rclcpp::Time & /*time*/, const rclcpp::D
 } // namespace eirbot_micro_ros
 
 #include "pluginlib/class_list_macros.hpp"
-PLUGINLIB_EXPORT_CLASS(eirbot_micro_ros::EirBotMicroRos, hardware_interface::SystemInterface)
+PLUGINLIB_EXPORT_CLASS(eirbot_base::EirBotMicroRos, hardware_interface::SystemInterface)

@@ -7,7 +7,7 @@
 #include "std_msgs/msg/float64_multi_array.hpp"
 #include "sensor_msgs/msg/joint_state.hpp"
 
-namespace eirbot_micro_ros
+namespace eirbot_base
 {
 using hardware_interface::CallbackReturn;
 using hardware_interface::return_type;
