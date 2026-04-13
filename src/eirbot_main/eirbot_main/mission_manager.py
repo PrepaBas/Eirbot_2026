@@ -57,10 +57,10 @@ class MissionManager(Node):
         req.pose.header.stamp = self.get_clock().now().to_msg()
         if color == 0: # Bleu
             req.pose.pose.pose.position.x, req.pose.pose.pose.position.y = -1.20, 1.70
-            req.pose.pose.pose.orientation.w = -1.0
+            req.pose.pose.pose.orientation.w = -0.5
         else: # Orange
             req.pose.pose.pose.position.x, req.pose.pose.pose.position.y = 1.20, 1.70
-            req.pose.pose.pose.orientation.z, req.pose.pose.pose.orientation.w = -1.0, 0.0
+            req.pose.pose.pose.orientation.z, req.pose.pose.pose.orientation.w = -0.5, 0.0
         
         req.pose.pose.covariance = [1e-9 if i%7==0 else 0.0 for i in range(36)]
         self.ekf_client.call_async(req)
