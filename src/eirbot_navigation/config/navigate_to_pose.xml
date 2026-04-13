@@ -8,9 +8,9 @@
         
         <Action ID="FollowPath" path="{path}" controller_id="FollowPath"/>
 
-        <Action ID="Push" goal="{goal}" distance="0.4" speed="0.3" />
+        <Action ID="Push" goal="{goal}" distance="0.35" speed="0.3" />
         
-        <Action ID="BackUp" backup_dist="0.4" backup_speed="0.30"/>
+        <Action ID="BackUp" backup_dist="0.25" backup_speed="0.30"/>
       </PipelineSequence>
       
       <Fallback name="RecoveryActions">

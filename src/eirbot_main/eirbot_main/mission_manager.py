@@ -6,13 +6,14 @@ from rclpy.node import Node
 from rclpy.qos import QoSProfile, DurabilityPolicy
 from rclpy.action import ActionClient
 
-# Messages
+# Messages Standards
 from std_msgs.msg import Int8MultiArray
 from nav2_msgs.action import NavigateToPose
 from robot_localization.srv import SetPose
 from ament_index_python.packages import get_package_share_directory
-# IMPORTANT : Remplace 'tu_package_interfaces' par le vrai nom du package de ton service
-from eirbot_interfaces.srv import StringID # Exemple, adapte selon ton type de service
+
+# Message spécifique pour le Virtual Layer
+from nav2_virtual_layer.srv import RemoveShape
 
 class MissionManager(Node):
     def __init__(self):
@@ -22,18 +23,19 @@ class MissionManager(Node):
         qos = QoSProfile(depth=1, durability=DurabilityPolicy.TRANSIENT_LOCAL)
         self.sub_ui = self.create_subscription(Int8MultiArray, '/hardware/switches', self.ui_callback, qos)
         
-        # 2. Clients Services et Actions
+        # 2. Clients
         self.ekf_client = self.create_client(SetPose, '/set_pose')
         self.nav_client = ActionClient(self, NavigateToPose, 'navigate_to_pose')
-        # Client pour supprimer les formes du Virtual Layer
-        self.remove_shape_client = self.create_client(StringID, '/local_costmap/virtual_layer/remove_shape')
+        
+        # Client pour supprimer les formes (Local Costmap)
+        self.remove_shape_client = self.create_client(RemoveShape, '/global_costmap/virtual_layer/remove_shape')
 
-        # 3. STRATÉGIE (x, y, yaw, zone_id)
-        # zone_id est l'ID défini dans ton YAML que l'on veut supprimer APRES l'étape
+        # 3. STRATÉGIE
+        # Note : 'zone' doit correspondre à l'ID (identifier) défini dans ton YAML
         self.waypoints = [
-            {'pos': (1.25, 1.45, -1.57), 'zone': 'load_v2'},
-            {'pos': (0.7, 0.8, 3.14),    'zone': 'load_h2'},
-            {'pos': (0.8, 0.25, 3.14),   'zone': 'load_h1'},
+            {'pos': (1.25, 1.45, -1.57), 'zone': '16'},
+            {'pos': (0.7, 0.8, 3.14),    'zone': '12'},
+            {'pos': (0.8, 0.25, 3.14),   'zone': '11'},
         ]
         
         # 4. Variables de contrôle
@@ -50,7 +52,7 @@ class MissionManager(Node):
             self.handle_reset()
 
         if tirette == 0 and self.prev_tirette == 1 and not self.match_started:
-            self.get_logger().info('--- MATCH START ---')
+            self.get_logger().info('MATCH START')
             self.match_started = True
             self.current_step = 0
             self.send_next_goal()
@@ -64,7 +66,7 @@ class MissionManager(Node):
         req.pose.header.frame_id = 'map'
         req.pose.header.stamp = self.get_clock().now().to_msg()
         
-        # Position Home selon couleur
+        # Position Home
         x_home = -1.2 if self.color == 0 else 1.2
         y_home = 1.7
         yaw_home = -1.57
@@ -76,78 +78,70 @@ class MissionManager(Node):
         req.pose.pose.covariance = [0.01 if i in [0, 7, 35] else 0.0 for i in range(36)]
 
         self.ekf_client.call_async(req)
-        self.get_logger().info(f'Reset EKF (Color: {"Orange" if self.color else "Blue"})')
+        self.get_logger().info('Reset Pose executed')
 
-    def remove_virtual_zone(self, zone_id):
-        """ Appelle le service pour supprimer la zone de la costmap """
+    def remove_virtual_zone(self, zone_identifier):
+        """ Supprime la zone via le service nav2_virtual_layer """
         if not self.remove_shape_client.service_is_ready():
-            self.get_logger().warn('Service remove_shape non disponible')
+            self.get_logger().warn(f'Service de suppression non prêt pour {zone_identifier}')
             return
 
-        req = StringID.Request() # Adapte le type ici
-        req.id = zone_id
+        req = RemoveShape.Request()
+        req.identifier = zone_identifier
+        
+        self.get_logger().info(f'Suppression zone virtuelle : {zone_identifier}')
         self.remove_shape_client.call_async(req)
-        self.get_logger().info(f'Zone {zone_id} retirée de la carte.')
 
     def send_next_goal(self):
         goal = NavigateToPose.Goal()
         goal.pose.header.frame_id = 'map'
         
-        # CAS A : Waypoints Tactiques (Navigation + Push)
+        # ÉTAPES DE LA MISSION
         if self.current_step < len(self.waypoints):
             step = self.waypoints[self.current_step]
             x, y, yaw = step['pos']
             
-            # Utilise ton BT personnalisé qui contient l'Action PUSH
             nav_share = get_package_share_directory('eirbot_navigation')
             goal.behavior_tree = os.path.join(nav_share, 'config', 'navigate_to_pose.xml')
-            self.get_logger().info(f'Exécution étape {self.current_step} : {x}, {y}')
+            self.get_logger().info(f'Objectif {self.current_step} envoyé')
 
-        # CAS B : Retour à la Maison (Navigation Simple)
+        # RETOUR À LA BASE
         elif self.current_step == len(self.waypoints):
             x = -1.2 if self.color == 0 else 1.2
             y = 1.7
             yaw = -1.57
-            # On ne définit pas goal.behavior_tree -> Nav2 utilise le BT par défaut (simple)
-            self.get_logger().info('Toutes étapes finies. Retour au bercail...')
+            # On laisse goal.behavior_tree vide pour la navigation simple
+            self.get_logger().info('Retour Home en cours...')
 
-        # CAS C : Mission terminée
         else:
-            self.get_logger().info('MATCH TERMINÉ - Robot à la base.')
+            self.get_logger().info('Mission terminée.')
             return
 
-        # Remplissage orientation
         goal.pose.pose.position.x = x
         goal.pose.pose.position.y = y
         goal.pose.pose.orientation.z = math.sin(yaw / 2.0)
         goal.pose.pose.orientation.w = math.cos(yaw / 2.0)
 
         self.nav_client.wait_for_server()
-        future = self.nav_client.send_goal_async(goal)
-        future.add_done_callback(self.goal_response_callback)
+        self.nav_client.send_goal_async(goal).add_done_callback(self.goal_response_callback)
 
     def goal_response_callback(self, future):
         goal_handle = future.result()
         if not goal_handle.accepted:
-            self.get_logger().error('Objectif refusé par Nav2')
+            self.get_logger().error('Objectif refusé')
             return
-        
-        self.get_logger().info('Objectif accepté, en attente du résultat...')
-        result_future = goal_handle.get_result_async()
-        result_future.add_done_callback(self.get_result_callback)
+        goal_handle.get_result_async().add_done_callback(self.get_result_callback)
 
     def get_result_callback(self, future):
-        status = future.result().status
-        if status == 4: # SUCCEEDED
-            # Si on vient de finir un waypoint tactique, on supprime sa zone virtuelle
+        if future.result().status == 4: # STATUS_SUCCEEDED
+            # 1. On supprime la zone de la carte si elle existe pour cette étape
             if self.current_step < len(self.waypoints):
                 zone_id = self.waypoints[self.current_step]['zone']
                 self.remove_virtual_zone(zone_id)
 
+            # 2. On passe à l'étape suivante
             self.current_step += 1
             self.send_next_goal()
-        else:
-            self.get_logger().warn(f'Action échouée (Status: {status}). On sature ici.')
 
 def main():
     rclpy.init()
