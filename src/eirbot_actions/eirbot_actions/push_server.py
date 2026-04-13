@@ -22,50 +22,66 @@ class PushActionServer(Node):
         self.x = msg.pose.pose.position.x
         self.y = msg.pose.pose.position.y
         q = msg.pose.pose.orientation
-        self.yaw = math.atan2(2 * (q.w * q.z + q.x * q.y), 1 - 2 * (q.y * q.y + q.z * q.z))
+        # Conversion Quaternion vers Yaw
+        siny_cosp = 2 * (q.w * q.z + q.x * q.y)
+        cosy_cosp = 1 - 2 * (q.y * q.y + q.z * q.z)
+        self.yaw = math.atan2(siny_cosp, cosy_cosp)
 
-    def align(self, target_deg):
-        target_rad = math.radians(target_deg)
-        while rclpy.ok():
-            rclpy.spin_once(self, timeout_sec=0.05)
-            error = math.atan2(math.sin(target_rad - self.yaw), math.cos(target_rad - self.yaw))
-            if abs(math.degrees(error)) < 1.5: break
-            
-            msg = Twist()
-            msg.angular.z = max(min(0.5 * error, 0.6), -0.6)
-            self.cmd_pub.publish(msg)
-        self.cmd_pub.publish(Twist())
+    def get_angle_error(self, target_rad):
+        return math.atan2(math.sin(target_rad - self.yaw), math.cos(target_rad - self.yaw))
 
     async def execute_callback(self, goal_handle):
-        self.get_logger().info('Requête Push reçue')
+        self.get_logger().info('Push Action Started')
         
-        # Extraction des paramètres du goal
         dist_target = goal_handle.request.distance
-        speed = goal_handle.request.speed
-        angle = goal_handle.request.target_angle
+        speed_target = goal_handle.request.speed
+        target_rad = math.radians(goal_handle.request.target_angle)
 
-        # 1. Alignement
-        self.align(angle)
+        rate = self.create_rate(20) # 20Hz pour un contrôle fluide
 
-        # 2. Poussée
+        # --- 1. ALIGNEMENT PRÉCIS ---
+        while rclpy.ok():
+            error = self.get_angle_error(target_rad)
+            if abs(math.degrees(error)) < 0.5: # Tolérance plus fine
+                break
+            
+            msg = Twist()
+            # On utilise un gain P (0.4) et on sature la vitesse minimale pour vaincre les frottements
+            p_term = 0.5 * error
+            min_rot = 0.15 if error > 0 else -0.15
+            msg.angular.z = max(min(p_term, 0.5), -0.5) + min_rot
+            
+            self.cmd_pub.publish(msg)
+            rate.sleep()
+
+        self.cmd_pub.publish(Twist()) # Stop rotation
+        self.get_logger().info('Aligned. Starting Translation...')
+
+        # --- 2. POUSSÉE AVEC MAINTIEN DE CAP ---
         start_x, start_y = self.x, self.y
         feedback_msg = Push.Feedback()
-        
-        move_msg = Twist()
-        move_msg.linear.x = speed
 
         while rclpy.ok():
             dist_moved = math.sqrt((self.x - start_x)**2 + (self.y - start_y)**2)
             
-            # Envoi du feedback au BT
+            # Feedback
             feedback_msg.partial_distance = dist_moved
             goal_handle.publish_feedback(feedback_msg)
 
-            if dist_moved >= dist_target: break
-            
-            self.cmd_pub.publish(move_msg)
-            rclpy.spin_once(self, timeout_sec=0.05)
+            if dist_moved >= dist_target:
+                break
 
+            # Correction de cap (Heading Lock)
+            angle_error = self.get_angle_error(target_rad)
+            
+            msg = Twist()
+            msg.linear.x = speed_target
+            msg.angular.z = 1.0 * angle_error # Gain correctif pour rester droit malgré les obstacles
+            
+            self.cmd_pub.publish(msg)
+            rate.sleep()
+
+        # Stop final
         self.cmd_pub.publish(Twist())
         goal_handle.succeed()
         
@@ -76,7 +92,13 @@ class PushActionServer(Node):
 def main():
     rclpy.init()
     node = PushActionServer()
-    rclpy.spin(node)
+    # Le MultiThreadedExecutor permet de recevoir l'Odom pendant que l'Action tourne
+    executor = rclpy.executors.MultiThreadedExecutor()
+    executor.add_node(node)
+    try:
+        executor.spin()
+    except KeyboardInterrupt:
+        pass
     rclpy.shutdown()
 
 if __name__ == '__main__':
