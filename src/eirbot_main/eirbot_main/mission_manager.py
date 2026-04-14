@@ -14,13 +14,19 @@ from ament_index_python.packages import get_package_share_directory
 
 # Message spécifique pour le Virtual Layer
 from nav2_virtual_layer.srv import RemoveShape
+from std_srvs.srv import Trigger
 
 class MissionManager(Node):
     def __init__(self):
         super().__init__('mission_manager')
+        
+        self.current_goal_handle = None
 
         # 1. Configuration UI (Tirette et Reset)
-        qos = QoSProfile(depth=1, durability=DurabilityPolicy.TRANSIENT_LOCAL)
+        qos = QoSProfile(
+            depth=10,
+            durability=DurabilityPolicy.VOLATILE # <-- Changement ici
+        )
         self.sub_ui = self.create_subscription(Int8MultiArray, '/hardware/switches', self.ui_callback, qos)
         
         # 2. Clients
@@ -29,6 +35,7 @@ class MissionManager(Node):
         
         # Client pour supprimer les formes (Local Costmap)
         self.remove_shape_client = self.create_client(RemoveShape, '/global_costmap/virtual_layer/remove_shape')
+        self.reload_shapes_client = self.create_client(Trigger, '/global_costmap/virtual_layer/reload_shapes')
 
         # 3. STRATÉGIE
         # Note : 'zone' doit correspondre à l'ID (identifier) défini dans ton YAML
@@ -60,6 +67,11 @@ class MissionManager(Node):
         self.prev_tirette = tirette
 
     def handle_reset(self):
+        if self.current_goal_handle is not None:
+            self.current_goal_handle.cancel_goal_async()
+            self.current_goal_handle = None
+            self.get_logger().info('Objectif Nav2 annulé.')
+
         self.match_started = False
         self.current_step = 0
         req = SetPose.Request()
@@ -79,6 +91,11 @@ class MissionManager(Node):
 
         self.ekf_client.call_async(req)
         self.get_logger().info('Reset Pose executed')
+
+        if self.reload_shapes_client.service_is_ready():
+            req = Trigger.Request()
+            self.reload_shapes_client.call_async(req)
+            self.get_logger().info('Zones virtuelles rechargées depuis le YAML')
 
     def remove_virtual_zone(self, zone_identifier):
         """ Supprime la zone via le service nav2_virtual_layer """
@@ -126,11 +143,11 @@ class MissionManager(Node):
         self.nav_client.send_goal_async(goal).add_done_callback(self.goal_response_callback)
 
     def goal_response_callback(self, future):
-        goal_handle = future.result()
-        if not goal_handle.accepted:
+        self.current_goal_handle = future.result() # On stocke le handle ici
+        if not self.current_goal_handle.accepted:
             self.get_logger().error('Objectif refusé')
             return
-        goal_handle.get_result_async().add_done_callback(self.get_result_callback)
+        self.current_goal_handle.get_result_async().add_done_callback(self.get_result_callback)
 
     def get_result_callback(self, future):
         if future.result().status == 4: # STATUS_SUCCEEDED

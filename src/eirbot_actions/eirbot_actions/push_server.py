@@ -42,12 +42,12 @@ class PushActionServer(Node):
         # --- 1. ALIGNEMENT PRÉCIS ---
         while rclpy.ok():
             error = self.get_angle_error(target_rad)
-            if abs(math.degrees(error)) < 0.5: # Tolérance plus fine
+            if abs(math.degrees(error)) < 0.2: # Tolérance plus fine
                 break
             
             msg = Twist()
             # On utilise un gain P (0.4) et on sature la vitesse minimale pour vaincre les frottements
-            p_term = 0.5 * error
+            p_term = 1.5 * error
             min_rot = 0.15 if error > 0 else -0.15
             msg.angular.z = max(min(p_term, 0.5), -0.5) + min_rot
             
@@ -76,7 +76,7 @@ class PushActionServer(Node):
             
             msg = Twist()
             msg.linear.x = speed_target
-            msg.angular.z = 1.0 * angle_error # Gain correctif pour rester droit malgré les obstacles
+            msg.angular.z = 2.0 * angle_error # Gain correctif pour rester droit malgré les obstacles
             
             self.cmd_pub.publish(msg)
             rate.sleep()
