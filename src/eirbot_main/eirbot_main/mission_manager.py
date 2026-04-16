@@ -120,11 +120,13 @@ class MissionManager(Node):
         self.match_started = False
         self.current_step = 0
 
-        self.create_timer(2.0, self.finish_reset, oneshot=True)
+        self.reset_timer = self.create_timer(2.0, self.finish_reset_callback)
 
-    def finish_reset(self):
+    def finish_reset_callback(self):
+        # On détruit le timer immédiatement pour qu'il ne tourne qu'une fois
+        self.reset_timer.destroy()
         self.is_resetting = False
-        self.get_logger().info('Reset terminé, prêt pour la suite.')
+        self.get_logger().info('Reset terminé, verrou levé.')
 
     def remove_virtual_zone(self, zone_identifier):
         """ Supprime la zone via le service nav2_virtual_layer """
