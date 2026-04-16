@@ -169,7 +169,7 @@ local_costmap:
       
       virtual_layer:
         plugin: "nav2_virtual_layer::VirtualLayer"
-        enabled: false
+        enabled: true
         map_frame: map
         enable_visualization: true
         default_cost_level: 254
