@@ -98,7 +98,7 @@ class MissionManager(Node):
         req.pose.header.stamp = self.get_clock().now().to_msg()
         
         # Position Home
-        x_home = -1.2 if self.color == 0 else 1.2
+        x_home = 1.2 if self.color == 0 else -1.2
         y_home = 1.7
         yaw_home = -1.57
 
