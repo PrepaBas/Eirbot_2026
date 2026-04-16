@@ -177,14 +177,14 @@ local_costmap:
 
       obstacle_layer: # TODO : make this subscribe to scan to detect enemy robot
         plugin: "nav2_costmap_2d::ObstacleLayer"
-        enabled: false
+        enabled: true
         observation_sources: virtual_obstacles
 
       inflation_layer:
-        enabled: false
+        enabled: true
         plugin: "nav2_costmap_2d::InflationLayer"
         cost_scaling_factor: 10.0
-        inflation_radius: 0.35 # TODO : make this larger than the robot radius to ensure safety
+        inflation_radius: 0.60 # TODO : make this larger than the robot radius to ensure safety
 
 map_server:
   ros__parameters:
