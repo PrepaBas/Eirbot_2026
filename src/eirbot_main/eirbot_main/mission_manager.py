@@ -15,6 +15,7 @@ from ament_index_python.packages import get_package_share_directory
 # Message spécifique pour le Virtual Layer
 from nav2_virtual_layer.srv import RemoveShape
 from std_srvs.srv import Trigger
+from nav2_msgs.srv import ClearEntireCostmap
 
 class MissionManager(Node):
     def __init__(self):
@@ -36,6 +37,9 @@ class MissionManager(Node):
         # Client pour supprimer les formes (Local Costmap)
         self.remove_shape_client = self.create_client(RemoveShape, '/global_costmap/virtual_layer/remove_shape')
         self.reload_shapes_client = self.create_client(Trigger, '/global_costmap/virtual_layer/reload_shapes')
+
+        self.clear_global_costmap = self.create_client(ClearEntireCostmap, '/global_costmap/clear_entirely_global_costmap')
+        self.clear_local_costmap = self.create_client(ClearEntireCostmap, '/local_costmap/clear_entirely_local_costmap')
 
         # 3. STRATÉGIE
         # Note : 'zone' doit correspondre à l'ID (identifier) défini dans ton YAML
@@ -72,8 +76,6 @@ class MissionManager(Node):
             self.current_goal_handle = None
             self.get_logger().info('Objectif Nav2 annulé.')
 
-        self.match_started = False
-        self.current_step = 0
         req = SetPose.Request()
         req.pose.header.frame_id = 'map'
         req.pose.header.stamp = self.get_clock().now().to_msg()
@@ -92,10 +94,21 @@ class MissionManager(Node):
         self.ekf_client.call_async(req)
         self.get_logger().info('Reset Pose executed')
 
+        # 3. Nettoyer les Costmaps (pour enlever les fantômes d'obstacles)
+        if self.clear_global_costmap.service_is_ready():
+            self.clear_global_costmap.call_async(ClearEntireCostmap.Request())
+        if self.clear_local_costmap.service_is_ready():
+            self.clear_local_costmap.call_async(ClearEntireCostmap.Request())
+
+        # virtual zones
         if self.reload_shapes_client.service_is_ready():
             req = Trigger.Request()
             self.reload_shapes_client.call_async(req)
             self.get_logger().info('Zones virtuelles rechargées depuis le YAML')
+
+
+        self.match_started = False
+        self.current_step = 0
 
     def remove_virtual_zone(self, zone_identifier):
         """ Supprime la zone via le service nav2_virtual_layer """

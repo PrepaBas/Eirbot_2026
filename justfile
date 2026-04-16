@@ -63,7 +63,7 @@ lura:
     ros2 run micro_ros_agent micro_ros_agent serial --dev /dev/ttyUSB0 -v6
 
 ssh:
-    ssh natch@10.154.67.201
+    ssh natch@raspberrypi.local
 
 localization:
     sudo apt update \
