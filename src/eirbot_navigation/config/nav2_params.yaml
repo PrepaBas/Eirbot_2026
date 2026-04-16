@@ -169,7 +169,7 @@ local_costmap:
       
       virtual_layer:
         plugin: "nav2_virtual_layer::VirtualLayer"
-        enabled: true
+        enabled: false
         map_frame: map
         enable_visualization: true
         default_cost_level: 254
@@ -181,6 +181,7 @@ local_costmap:
         observation_sources: virtual_obstacles
 
       inflation_layer:
+        enabled: false
         plugin: "nav2_costmap_2d::InflationLayer"
         cost_scaling_factor: 10.0
         inflation_radius: 0.35 # TODO : make this larger than the robot radius to ensure safety
