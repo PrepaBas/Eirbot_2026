@@ -81,6 +81,13 @@ class MissionManager(Node):
         self.is_resetting = True    
         self.get_logger().info('Reset démarré...')
 
+        # 3. Nettoyer les Costmaps (pour enlever les fantômes d'obstacles)
+        if self.clear_global_costmap.service_is_ready():
+            self.clear_global_costmap.call_async(ClearEntireCostmap.Request())
+        if self.clear_local_costmap.service_is_ready():
+            self.clear_local_costmap.call_async(ClearEntireCostmap.Request())
+
+
         if self.current_goal_handle is not None:
             self.current_goal_handle.cancel_goal_async()
             self.current_goal_handle = None
@@ -104,18 +111,11 @@ class MissionManager(Node):
         self.ekf_client.call_async(req)
         self.get_logger().info('Reset Pose executed')
 
-        # 3. Nettoyer les Costmaps (pour enlever les fantômes d'obstacles)
-        if self.clear_global_costmap.service_is_ready():
-            self.clear_global_costmap.call_async(ClearEntireCostmap.Request())
-        if self.clear_local_costmap.service_is_ready():
-            self.clear_local_costmap.call_async(ClearEntireCostmap.Request())
-
         # virtual zones
         if self.reload_shapes_client.service_is_ready():
             req = Trigger.Request()
             self.reload_shapes_client.call_async(req)
             self.get_logger().info('Zones virtuelles rechargées depuis le YAML')
-
 
         self.match_started = False
         self.current_step = 0
