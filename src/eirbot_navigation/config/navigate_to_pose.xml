@@ -1,19 +1,20 @@
 <root BTCPP_format="4">
   <BehaviorTree ID="MainTree">
     <RecoveryNode number_of_retries="6" name="NavigateRecovery">
-      <PipelineSequence name="NavigateWithReplanning">
+      <Sequence name="TopLevelSequence">
         
-        <RateController hz="1.0">
-          <Action ID="ComputePathToPose" goal="{goal}" path="{planned_path}" planner_id="GridBased"/>
-        </RateController>
-        
-        <Action ID="FollowPath" path="{planned_path}" controller_id="FollowPath"/>
+        <PipelineSequence name="NavigationPhase">
+          <RateController hz="1.0">
+            <Action ID="ComputePathToPose" goal="{goal}" path="{planned_path}" planner_id="GridBased"/>
+          </RateController>
+          <Action ID="FollowPath" path="{planned_path}" controller_id="FollowPath"/>
+        </PipelineSequence>
 
         <Action ID="Push" goal="{goal}" distance="0.35" speed="0.3" />
         <Action ID="BackUp" backup_dist="0.25" backup_speed="0.30"/>
         
-      </PipelineSequence>
-      
+      </Sequence>
+
       <Fallback name="RecoveryActions">
         <Action ID="ClearEntireCostmap" name="ClearGlobalCostmap-Sub" service_name="/global_costmap/clear_entirely_global_costmap"/>
         <Action ID="ClearEntireCostmap" name="ClearLocalCostmap-Sub" service_name="/local_costmap/clear_entirely_local_costmap"/>
