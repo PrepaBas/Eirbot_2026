@@ -39,8 +39,8 @@ class MissionManager(Node):
             {'pos': (0.7, 0.8, 3.14),  'zone_name': 'loading_h_mid'},
             {'pos': (0.8, 0.25, 3.14),  'zone_name': 'loading_h_bot'},
 
-            {'pos': (-0.7, 0.8, 3.14),  'zone_name': 'loading_h_mid_mirror'},
-            {'pos': (-0.8, 0.25, 3.14),  'zone_name': 'loading_h_bot_mirror'},
+            {'pos': (-0.7, 0.8, 0.0),  'zone_name': 'loading_h_mid_mirror'},
+            {'pos': (-0.8, 0.25, 0.0),  'zone_name': 'loading_h_bot_mirror'},
         ]
 
         # Mapping des IDs (Bleu, Orange)
