@@ -38,6 +38,9 @@ class MissionManager(Node):
             {'pos': (1.25, 1.45, -1.57), 'zone_name': 'loading_v_top'},
             {'pos': (0.7, 0.8, 3.14),  'zone_name': 'loading_h_mid'},
             {'pos': (0.8, 0.25, 3.14),  'zone_name': 'loading_h_bot'},
+
+            {'pos': (-0.7, 0.8, 3.14),  'zone_name': 'loading_h_mid_mirror'},
+            {'pos': (-0.8, 0.25, 3.14),  'zone_name': 'loading_h_bot_mirror'},
         ]
 
         # Mapping des IDs (Bleu, Orange)
@@ -45,6 +48,9 @@ class MissionManager(Node):
             'loading_v_top': ('16', '18'),
             'loading_h_mid': ('12', '14'),
             'loading_h_bot': ('11', '13'),
+            'loading_h_mid_mirror': ('14', '12'),
+            'loading_h_bot_mirror': ('13', '11'),
+
             'start_cleanup': (['2', '4'], ['7', '8']),
         }
         
