@@ -51,7 +51,7 @@ class MissionManager(Node):
             'loading_h_mid_mirror': ('14', '12'),
             'loading_h_bot_mirror': ('13', '11'),
 
-            'start_cleanup': (['2', '4'], ['7', '8']),
+            'start_cleanup': (['2', '4', '7', '8'], ['7', '8', '2', '4']),
         }
         
         self.current_step = 0
