@@ -175,10 +175,18 @@ local_costmap:
         default_cost_level: 254
         forms_file: "package://eirbot_navigation/config/virtual_layer_forms.yaml"
 
-      obstacle_layer: # TODO : make this subscribe to scan to detect enemy robot
+      obstacle_layer:
         plugin: "nav2_costmap_2d::ObstacleLayer"
         enabled: true
-        observation_sources: virtual_obstacles
+        observation_sources: scan
+        scan:
+          topic: /scan
+          max_obstacle_height: 2.0
+          clearing: True
+          marking: True
+          data_type: "LaserScan"
+          raytrace_max_range: 3.0
+          obstacle_max_range: 2.5
 
       inflation_layer:
         enabled: true
