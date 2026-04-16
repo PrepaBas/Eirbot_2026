@@ -54,8 +54,7 @@ class MissionManager(Node):
         self.match_started = False
         self.prev_tirette = 1
         self.color = 0 # 0: Bleu, 1: Orange
-
-        self.reset_block = 0
+        self.is_resetting = False
 
     def ui_callback(self, msg):
         if len(msg.data) < 3: return
@@ -76,9 +75,12 @@ class MissionManager(Node):
         self.prev_tirette = tirette
 
     def handle_reset(self):
-        if self.reset_block == 1:
-            return
+        if self.is_resetting:
+            return  # On ignore si un reset est déjà en cours
         
+        self.is_resetting = True    
+        self.get_logger().info('Reset démarré...')
+
         if self.current_goal_handle is not None:
             self.current_goal_handle.cancel_goal_async()
             self.current_goal_handle = None
@@ -117,6 +119,12 @@ class MissionManager(Node):
 
         self.match_started = False
         self.current_step = 0
+
+        self.create_timer(2.0, self.finish_reset, oneshot=True)
+
+    def finish_reset(self):
+        self.is_resetting = False
+        self.get_logger().info('Reset terminé, prêt pour la suite.')
 
     def remove_virtual_zone(self, zone_identifier):
         """ Supprime la zone via le service nav2_virtual_layer """
