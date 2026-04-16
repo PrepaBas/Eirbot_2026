@@ -82,10 +82,10 @@ class MissionManager(Node):
         self.get_logger().info('Reset démarré...')
 
         # 3. Nettoyer les Costmaps (pour enlever les fantômes d'obstacles)
-        if self.clear_global_costmap.service_is_ready():
-            self.clear_global_costmap.call_async(ClearEntireCostmap.Request())
-        if self.clear_local_costmap.service_is_ready():
-            self.clear_local_costmap.call_async(ClearEntireCostmap.Request())
+        #if self.clear_global_costmap.service_is_ready():
+        #    self.clear_global_costmap.call_async(ClearEntireCostmap.Request())
+        #if self.clear_local_costmap.service_is_ready():
+        #    self.clear_local_costmap.call_async(ClearEntireCostmap.Request())
 
 
         if self.current_goal_handle is not None:

@@ -6,7 +6,6 @@ bt_navigator:
     odom_frame: odom
     service_timeout: 2.0
     default_bt_xml_filename: "package://eirbot_navigation/config/navigate_to_pose.xml"
-    bt_loop_duration: 100
     plugin_lib_names:
     - nav2_back_up_action_bt_node
     - nav2_spin_action_bt_node
@@ -43,9 +42,7 @@ bt_navigator:
 controller_server:
   ros__parameters:
     use_sim_time: False
-    controller_frequency: 10.0
-    expected_controller_frequency: 10.0
-    control_patience: 10.0
+    controller_frequency: 35.0
     min_x_velocity_threshold: 0.005
     min_y_velocity_threshold: 0.5
     min_theta_velocity_threshold: 0.005
@@ -133,7 +130,7 @@ global_costmap:
       robot_base_frame: base_link
       use_sim_time: False
       footprint: "[[0.13, 0.15], [0.13, -0.15], [-0.13, -0.15], [-0.13, 0.15]]"  #robot_radius: 0.25 # Adjust for your Eurobot
-      resolution: 0.05
+      resolution: 0.01
       track_unknown_space: false
       plugins: ["static_layer",  "virtual_layer", "inflation_layer"]
 
