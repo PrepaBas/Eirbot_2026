@@ -55,12 +55,17 @@ class MissionManager(Node):
         self.prev_tirette = 1
         self.color = 0 # 0: Bleu, 1: Orange
 
+        self.reset_block = 0
+
     def ui_callback(self, msg):
         if len(msg.data) < 3: return
         self.color, reset_btn, tirette = msg.data[0], msg.data[1], msg.data[2]
 
         if reset_btn == 1:
             self.handle_reset()
+
+        if reset_btn == 0:
+            self.reset_block = 0
 
         if tirette == 0 and self.prev_tirette == 1 and not self.match_started:
             self.get_logger().info('MATCH START')
@@ -71,6 +76,9 @@ class MissionManager(Node):
         self.prev_tirette = tirette
 
     def handle_reset(self):
+        if self.reset_block == 1:
+            return
+        
         if self.current_goal_handle is not None:
             self.current_goal_handle.cancel_goal_async()
             self.current_goal_handle = None

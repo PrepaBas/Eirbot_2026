@@ -2,26 +2,21 @@
   <BehaviorTree ID="MainTree">
     <RecoveryNode number_of_retries="6" name="NavigateRecovery">
       <PipelineSequence name="NavigateWithReplanning">
+        
         <RateController hz="1.0">
-          <Action ID="ComputePathToPose" goal="{goal}" path="{path}" planner_id="GridBased"/>
+          <Action ID="ComputePathToPose" goal="{goal}" path="{planned_path}" planner_id="GridBased"/>
         </RateController>
         
-        <Action ID="FollowPath" path="{path}" controller_id="FollowPath"/>
+        <Action ID="FollowPath" path="{planned_path}" controller_id="FollowPath"/>
 
         <Action ID="Push" goal="{goal}" distance="0.35" speed="0.3" />
-        
         <Action ID="BackUp" backup_dist="0.25" backup_speed="0.30"/>
+        
       </PipelineSequence>
       
       <Fallback name="RecoveryActions">
-        <Action ID="ClearEntireCostmap"   
-                name="ClearGlobalCostmap-Sub" 
-                service_name="/global_costmap/clear_entirely_global_costmap"/>
-                
-        <Action ID="ClearEntireCostmap" 
-                name="ClearLocalCostmap-Sub" 
-                service_name="/local_costmap/clear_entirely_local_costmap"/>
-        
+        <Action ID="ClearEntireCostmap" name="ClearGlobalCostmap-Sub" service_name="/global_costmap/clear_entirely_global_costmap"/>
+        <Action ID="ClearEntireCostmap" name="ClearLocalCostmap-Sub" service_name="/local_costmap/clear_entirely_local_costmap"/>
         <Action ID="BackUp" backup_dist="0.20" backup_speed="0.10"/>
         <Action ID="Spin" spin_dist="1.57"/>
         <Action ID="Wait" wait_duration="2"/>
