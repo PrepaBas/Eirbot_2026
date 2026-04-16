@@ -48,6 +48,7 @@ def generate_launch_description():
                     'autostart': autostart,
                     'params_file': configured_params,
                     'use_amcl': 'False',      # AMCL est désactivé ici
+                    'use_localization': 'False',
                     'use_composition': 'True', # Recommandé pour réduire la charge CPU sur Pi
                 }.items()
             ),
