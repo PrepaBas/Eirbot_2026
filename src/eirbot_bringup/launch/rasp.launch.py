@@ -61,4 +61,12 @@ def generate_launch_description():
 
         # 5. Eirbot Mission Manager (Le cerveau)
         Node(package='eirbot_main', executable='mission_manager', output='screen'),
+
+
+        Node(
+            package='tf2_ros',
+            executable='static_transform_publisher',
+            # x y z yaw pitch roll frame_id child_frame_id
+            arguments=['0.0', '0', '0.0', '0', '0', '0', 'base_link', 'laser']
+        )
     ])
