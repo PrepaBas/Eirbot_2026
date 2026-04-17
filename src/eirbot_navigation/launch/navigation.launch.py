@@ -50,6 +50,7 @@ def generate_launch_description():
                     'use_amcl': 'False',      # AMCL est désactivé ici
                     'use_localization': 'False',
                     'use_composition': 'True', # Recommandé pour réduire la charge CPU sur Pi
+                    'use_sim_time' : 'False',
                 }.items()
             ),
         ]

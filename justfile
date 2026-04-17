@@ -107,3 +107,6 @@ start-blue:
 # Simuler le START (Tirette retirée) - Côté ORANGE
 start-orange:
     ros2 topic pub --once --qos-durability transient_local /hardware/switches std_msgs/msg/Int8MultiArray "{data: [1, 0, 0]}"
+
+lidar:
+    ros2 launch sllidar_ros2 sllidar_a1_launch.py serial_port:=/dev/ttyAMA0 scan_mode:=Boost serial_baudrate:=115200
