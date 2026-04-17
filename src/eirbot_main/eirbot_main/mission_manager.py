@@ -125,8 +125,10 @@ class MissionManager(Node):
         for arg in args:
             if hasattr(arg, 'destroy'):
                 arg.destroy()
+
+        if(self.is_resetting):
+            self.get_logger().info('Reset terminé, robot prêt.')
         self.is_resetting = False
-        self.get_logger().info('Reset terminé, robot prêt.')
 
     def send_next_goal(self):
         goal = NavigateToPose.Goal()
