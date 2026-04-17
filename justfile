@@ -110,3 +110,6 @@ start-orange:
 
 lidar:
     ros2 launch sllidar_ros2 sllidar_a1_launch.py serial_port:=/dev/ttyAMA0 scan_mode:=Boost serial_baudrate:=115200
+
+chmod:
+    sudo chmod 666 /dev/ttyAMA0 /dev/ttyUSB0
