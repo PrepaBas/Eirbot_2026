@@ -37,7 +37,11 @@ def generate_launch_description():
         ),
 
         IncludeLaunchDescription(
-            PythonLaunchDescriptionSource(os.path.join(pkg_sllidar, 'launch', 'sllidar_a1_launch.py'))
+        PythonLaunchDescriptionSource(os.path.join(pkg_sllidar, 'launch', 'sllidar_a1_launch.py')),
+        launch_arguments={
+            'serial_port': '/dev/ttyAMA0',
+            'serial_baudrate': '115200', # Baudrate standard pour RPLidar A1
+            'frame_id': 'laser'}.items()
         ),
 
         Node(
