@@ -51,13 +51,13 @@ def generate_launch_description():
             output='screen',
         ),
 
-        Node(
-            package='micro_ros_agent',
-            executable='micro_ros_agent',
-            name='micro_ros_agent',
-            output='screen',
-            arguments=['serial', '--dev', '/dev/ttyUSB0', '-v1']
-        ),
+        #Node(
+        #    package='micro_ros_agent',
+        #    executable='micro_ros_agent',
+        #    name='micro_ros_agent',
+        #    output='screen',
+        #    arguments=['serial', '--dev', '/dev/ttyUSB0', '-v1']
+        #),
 
         # 5. Eirbot Mission Manager (Le cerveau)
         Node(package='eirbot_main', executable='mission_manager', output='screen'),
