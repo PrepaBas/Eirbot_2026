@@ -72,15 +72,15 @@ localization:
 clone:
     cd ~/ros2_ws/src && \
     git clone https://github.com/sherif1152/nav2-virtual-layer.git && \
-    git clone -b $ROS_DISTRO https://github.com/micro-ROS/micro_ros_setup.git
+    git clone -b $ROS_DISTRO https://github.com/micro-ROS/micro_ros_setup.git \
+    git clone https://github.com/Slamtec/sllidar_ros2.git
 
+rosdeps:
     cd ~/ros2_ws
     sudo apt update && rosdep update
     rosdep install --from-paths src --ignore-src -r -y
 
-    colcon build --symlink-install
-    source install/setup.bash
-
+agent:
     ros2 run micro_ros_setup create_agent_ws.sh
     ros2 run micro_ros_setup build_agent.sh
 
