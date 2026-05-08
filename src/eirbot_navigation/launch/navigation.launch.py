@@ -8,19 +8,22 @@ from launch.substitutions import LaunchConfiguration
 from nav2_common.launch import RewrittenYaml 
 
 def generate_launch_description():
+    # 1. Chemins des dossiers
     pkg_navigation = get_package_share_directory('eirbot_navigation')
     pkg_nav2_bringup = get_package_share_directory('nav2_bringup')
     
     map_yaml_file = os.path.join(pkg_navigation, 'maps', 'eurobot_table.yaml')
     default_params_file = os.path.join(pkg_navigation, 'config', 'nav2_params.yaml')
 
+    # 2. Arguments de lancement
     use_sim_time = LaunchConfiguration('use_sim_time', default='false')
     autostart = LaunchConfiguration('autostart', default='true')
     params_file = LaunchConfiguration('params_file', default=default_params_file)
 
+    # 3. Réécriture des paramètres (Pour injecter use_sim_time proprement)
     param_substitutions = {
         'use_sim_time': use_sim_time,
-        'global_frame': 'map'
+        'global_frame': 'map' # On s'assure que Nav2 travaille toujours dans le repère map
     }
 
     configured_params = RewrittenYaml(
@@ -29,10 +32,11 @@ def generate_launch_description():
         param_rewrites=param_substitutions,
         convert_types=True)
 
+    # 4. Groupe Nav2 : On lance uniquement le nécessaire
     nav2_stack = GroupAction(
         actions=[
-            # Redirect the final output of the entire Nav2 stack
-            SetRemap(src='/cmd_vel', dst='/cmd_vel_nav'),
+            # Remap du topic de commande vers ton contrôleur hardware
+            SetRemap(src='/cmd_vel', dst='/eirbot_base_controller/cmd_vel_unstamped'),
             
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource(
@@ -43,28 +47,18 @@ def generate_launch_description():
                     'use_sim_time': use_sim_time,
                     'autostart': autostart,
                     'params_file': configured_params,
-                    'use_amcl': 'False',      
+                    'use_amcl': 'False',      # AMCL est désactivé ici
                     'use_localization': 'False',
-                    'use_composition': 'True', # Critical for Pi 5 CPU
+                    'use_composition': 'True', # Recommandé pour réduire la charge CPU sur Pi
+                    'use_sim_time' : 'False',
                 }.items()
             ),
         ]
     )
-
-    # Collision Monitor: The final safety gate
-    collision_monitor_node = Node(
-        package='nav2_collision_monitor',
-        executable='collision_monitor',
-        name='collision_monitor',
-        output='screen',
-        parameters=[configured_params]
-
-    )
-
+    
     return LaunchDescription([
         DeclareLaunchArgument('use_sim_time', default_value='false'),
         DeclareLaunchArgument('autostart', default_value='true'),
         DeclareLaunchArgument('params_file', default_value=default_params_file),
-        nav2_stack, # Added missing comma here
-        collision_monitor_node
+        nav2_stack
     ])
