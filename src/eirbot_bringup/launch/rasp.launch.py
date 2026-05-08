@@ -67,6 +67,6 @@ def generate_launch_description():
             package='tf2_ros',
             executable='static_transform_publisher',
             # x y z yaw pitch roll frame_id child_frame_id
-            arguments=['0.0', '0', '0.0', '0', '0', '1', 'base_link', 'laser']
+            arguments=['0.0', '0', '0.0', '0', '0', '3.14159', 'base_link', 'laser']
         )
     ])
