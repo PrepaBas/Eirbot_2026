@@ -195,7 +195,7 @@ local_costmap:
 
       large_inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
-        cost_scaling_factor: 100.0
+        cost_scaling_factor: 1.0
         inflation_radius: 1.2 # TODO : make this larger than the robot radius to ensure safety
 
       virtual_layer:
