@@ -173,24 +173,16 @@ local_costmap:
       robot_base_frame: base_link
       use_sim_time: False
       rolling_window: true
-      width: 1
-      height: 1
+      width: 2
+      height: 2
       resolution: 0.02
       track_unknown_space: false
       footprint: "[[0.13, 0.15], [0.13, -0.15], [-0.13, -0.15], [-0.13, 0.15]]"  #robot_radius: 0.25 # Adjust for your Eurobot
-      plugins: ["virtual_layer", "obstacle_layer", "inflation_layer"]
+      plugins: ["obstacle_layer", "large_inflation_layer", "virtual_layer", "small_inflation_layer"]
       
-      virtual_layer:
-        plugin: "nav2_virtual_layer::VirtualLayer"
-        enabled: false
-        map_frame: map
-        enable_visualization: true
-        default_cost_level: 254
-        forms_file: "package://eirbot_navigation/config/virtual_layer_forms.yaml"
-
       obstacle_layer:
         plugin: "nav2_costmap_2d::ObstacleLayer"
-        enabled: true
+        enabled: false
         observation_sources: scan
         scan:
           topic: /scan
@@ -201,11 +193,26 @@ local_costmap:
           raytrace_max_range: 3.0
           obstacle_max_range: 2.5
 
-      inflation_layer:
+      large_inflation_layer:
+        plugin: "nav2_costmap_2d::InflationLayer"
+        cost_scaling_factor: 10.0
+        inflation_radius: 1.2 # TODO : make this larger than the robot radius to ensure safety
+
+      virtual_layer:
+        plugin: "nav2_virtual_layer::VirtualLayer"
+        enabled: false
+        map_frame: map
+        enable_visualization: true
+        default_cost_level: 254
+        forms_file: "package://eirbot_navigation/config/virtual_layer_forms.yaml"
+
+      small_inflation_layer:
         enabled: true
         plugin: "nav2_costmap_2d::InflationLayer"
-        cost_scaling_factor: 3.0
-        inflation_radius: 1.0 # TODO : make this larger than the robot radius to ensure safety
+        cost_scaling_factor: 4.0
+        inflation_radius: 0.4 # TODO : make this larger than the robot radius to ensure safety
+
+
 
 map_server:
   ros__parameters:
