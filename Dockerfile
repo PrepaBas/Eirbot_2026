@@ -44,6 +44,7 @@ RUN apt update && apt install -y \
     && rm -rf /var/lib/apt/lists/*
 
 RUN apt update && apt install -y \
+    ros-humble-twist-mux \
     ros-humble-xacro \
     ros-humble-ros2-control \
     ros-humble-ros2-controllers \
@@ -52,7 +53,6 @@ RUN apt update && apt install -y \
     ros-humble-navigation2 \
     ros-humble-nav2-bringup \
     ros-humble-robot-localization \
-    ros-humble-twist-mux \
     && rm -rf /var/lib/apt/lists/*
 
 # install Just
