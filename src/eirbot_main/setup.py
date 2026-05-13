@@ -25,7 +25,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'mission_manager = eirbot_main.mission_manager:main'
+            'mission_manager = eirbot_main.mission_manager:main',
             'homologation = eirbot_main.homologation:main'
         ],
     },
