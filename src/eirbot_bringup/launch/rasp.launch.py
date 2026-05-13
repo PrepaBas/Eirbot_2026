@@ -68,5 +68,23 @@ def generate_launch_description():
             executable='static_transform_publisher',
             # x y z yaw pitch roll frame_id child_frame_id
             arguments=['0.0', '0', '0.0', '0', '0', '3.14159', 'base_link', 'laser']
+        ),
+
+        # 6. Safety Node (Le gardien du Lidar)
+        Node(
+            package='eirbot_safety',
+            executable='safety_node', # Vérifie le nom dans ton CMakeLists.txt
+            name='safety_node',
+            output='screen',
+            parameters=[{'stop_distance': 0.99}] # Tu peux régler la distance ici
+        ),
+
+        # 1. Le Twist Mux
+        Node(
+            package='twist_mux',
+            executable='twist_mux',
+            name='twist_mux',
+            parameters=[os.path.join(pkg_nav, 'config', 'twist_mux.yaml')],
+            remappings=[('/cmd_vel_out', '/eirbot_base_controller/cmd_vel_unstamped')]
         )
     ])

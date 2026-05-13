@@ -36,7 +36,7 @@ def generate_launch_description():
     nav2_stack = GroupAction(
         actions=[
             # Remap du topic de commande vers ton contrôleur hardware
-            SetRemap(src='/cmd_vel', dst='/eirbot_base_controller/cmd_vel_unstamped'),
+            SetRemap(src='/cmd_vel', dst='/cmd_vel_nav'),
             
             IncludeLaunchDescription(
                 PythonLaunchDescriptionSource(
