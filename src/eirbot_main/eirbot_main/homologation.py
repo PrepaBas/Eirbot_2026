@@ -7,9 +7,9 @@ from std_msgs.msg import Int8MultiArray
 import math
 import time
 
-class SimpleTestPush(Node):
+class Homologation(Node):
     def __init__(self):
-        super().__init__('simple_test_push')
+        super().__init__('homologation')
         
         # UI Subscriber (Color, Reset, Tirette)
         self.sub_ui = self.create_subscription(Int8MultiArray, '/hardware/switches', self.ui_callback, 10)
@@ -89,7 +89,7 @@ class SimpleTestPush(Node):
 
 def main():
     rclpy.init()
-    node = SimpleTestPush()
+    node = Homologation()
     try:
         rclpy.spin(node)
     except KeyboardInterrupt:
