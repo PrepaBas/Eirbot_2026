@@ -60,7 +60,7 @@ def generate_launch_description():
         #),
 
         # 5. Eirbot Mission Manager (Le cerveau)
-        Node(package='eirbot_main', executable='mission_manager', output='screen'),
+        Node(package='eirbot_main', executable='homologation', output='screen'),
 
 
         Node(
