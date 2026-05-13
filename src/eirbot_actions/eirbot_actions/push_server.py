@@ -13,7 +13,7 @@ class PushActionServer(Node):
         self._action_server = ActionServer(
             self, Push, 'push_object', self.execute_callback)
         
-        self.cmd_pub = self.create_publisher(Twist, '/eirbot_base_controller/cmd_vel_unstamped', 10)
+        self.cmd_pub = self.create_publisher(Twist, '/cmd_vel_push', 10)
         self.odom_sub = self.create_subscription(Odometry, '/odometry/filtered', self.odom_callback, 10)
         
         self.x, self.y, self.yaw = 0.0, 0.0, 0.0

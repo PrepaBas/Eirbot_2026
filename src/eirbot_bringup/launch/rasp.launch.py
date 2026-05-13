@@ -76,7 +76,7 @@ def generate_launch_description():
             executable='safety_node', # Vérifie le nom dans ton CMakeLists.txt
             name='safety_node',
             output='screen',
-            parameters=[{'stop_distance': 0.20}] # Tu peux régler la distance ici
+            parameters=[{'stop_distance': 0.30}] # Tu peux régler la distance ici
         ),
 
         # 1. Le Twist Mux
