@@ -10,6 +10,7 @@ find_package(ament_cmake REQUIRED)
 find_package(behaviortree_cpp_v3 REQUIRED)
 find_package(nav2_behavior_tree REQUIRED)
 find_package(eirbot_interfaces REQUIRED)
+find_package(twist_mux REQUIRED)
 
 # Install directories
 install(
