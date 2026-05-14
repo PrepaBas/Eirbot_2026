@@ -36,14 +36,6 @@ def generate_launch_description():
             PythonLaunchDescriptionSource(os.path.join(pkg_nav, 'launch', 'navigation.launch.py'))
         ),
 
-        IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(os.path.join(pkg_sllidar, 'launch', 'sllidar_a1_launch.py')),
-        launch_arguments={
-            'serial_port': '/dev/ttyAMA0',
-            'serial_baudrate': '115200', # Baudrate standard pour RPLidar A1
-            'frame_id': 'laser'}.items()
-        ),
-
         Node(
             package='eirbot_actions',
             executable='push_server', # Assure-toi que c'est le nom défini dans ton setup.py ou CMakeLists
@@ -62,22 +54,22 @@ def generate_launch_description():
         # 5. Eirbot Mission Manager (Le cerveau)
         Node(package='eirbot_main', executable='homologation', output='screen'),
 
-
         Node(
             package='tf2_ros',
             executable='static_transform_publisher',
             # x y z yaw pitch roll frame_id child_frame_id
-            arguments=['0.0', '0', '0.0', '0', '0', '3.14159', 'base_link', 'laser']
-        ),
+            arguments=['0.0', '0', '0.0', '0', '0', '0', 'base_link', 'laser']
+        )
+
 
         # 6. Safety Node (Le gardien du Lidar)
-        Node(
-            package='eirbot_safety',
-            executable='safety_node', # Vérifie le nom dans ton CMakeLists.txt
-            name='safety_node',
-            output='screen',
-            parameters=[{'stop_distance': 0.30}] # Tu peux régler la distance ici
-        ),
+        #Node(
+        #    package='eirbot_safety',
+        #    executable='safety_node', # Vérifie le nom dans ton CMakeLists.txt
+        #    name='safety_node',
+        #    output='screen',
+        #    parameters=[{'stop_distance': 0.30}] # Tu peux régler la distance ici
+        #),
 
         # 1. Le Twist Mux
         Node(

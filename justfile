@@ -11,8 +11,9 @@ build:
     cd ~/ros2_ws 
     colcon build --symlink-install --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DPython_FIND_VIRTUALENV=ONLY -DPython3_FIND_VIRTUALENV=ONLY
 
-sd:
+sdr:
     docker run -d \
+    --restart always \
     --net=host \
     -v $(pwd):/home/ros/ros2_ws \
     --name my_ros_container \
@@ -24,6 +25,21 @@ sd:
     --cap-add=SYS_NICE \
     ros2_container \
     ros2 launch eirbot_bringup rasp.launch.py
+
+sd:
+    docker run -it \
+    --net=host \
+    -v $(pwd):/home/ros/ros2_ws \
+    --name my_ros_container \
+    --user ros \
+    --env="DISPLAY" \
+    --env="QT_X11_NO_MITSHM=1" \
+    -v /dev:/dev  \
+    --privileged \
+    --ulimit rtprio=99 \
+    --ulimit memlock=-1 \
+    --cap-add=SYS_NICE \
+    ros2_container
 
 nd:
     docker exec -it my_ros_container /bin/bash \
