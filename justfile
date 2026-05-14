@@ -13,7 +13,6 @@ build:
 
 sd:
     docker run -d \
-    --restart always \
     --net=host \
     -v $(pwd):/home/ros/ros2_ws \
     --name my_ros_container \
