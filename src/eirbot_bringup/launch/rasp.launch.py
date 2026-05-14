@@ -59,7 +59,7 @@ def generate_launch_description():
             executable='static_transform_publisher',
             # x y z yaw pitch roll frame_id child_frame_id
             arguments=['0.0', '0', '0.0', '0', '0', '0', 'base_link', 'laser']
-        )
+        ),
 
 
         # 6. Safety Node (Le gardien du Lidar)
