@@ -30,8 +30,6 @@ class MissionManager(Node):
         # 2. Clients
         self.ekf_client = self.create_client(SetPose, '/set_pose')
         self.nav_client = ActionClient(self, NavigateToPose, 'navigate_to_pose')
-        self.remove_shape_client = self.create_client(RemoveShape, '/global_costmap/virtual_layer/remove_shape')
-        self.reload_shapes_client = self.create_client(Trigger, '/global_costmap/virtual_layer/reload_shapes')
 
         # 3. STRATÉGIE LOGIQUE (Coordonnées pour le côté BLEU / X positif)
         self.waypoints = [
@@ -39,8 +37,8 @@ class MissionManager(Node):
             {'pos': (0.7, 0.8, 3.14),  'zone_name': 'loading_h_mid'},
             {'pos': (0.8, 0.25, 3.14),  'zone_name': 'loading_h_bot'},
 
-            {'pos': (-0.7, 0.8, 0.0),  'zone_name': 'loading_h_mid_mirror'},
-            {'pos': (-0.8, 0.25, 0.0),  'zone_name': 'loading_h_bot_mirror'},
+            #{'pos': (-0.7, 0.8, 0.0),  'zone_name': 'loading_h_mid_mirror'},
+            #{'pos': (-0.8, 0.25, 0.0),  'zone_name': 'loading_h_bot_mirror'},
         ]
 
         # Mapping des IDs (Bleu, Orange)
@@ -59,12 +57,6 @@ class MissionManager(Node):
         self.prev_tirette = 1
         self.color = 0 # 0: Bleu, 1: Orange
         self.is_resetting = False
-
-    def get_target_id(self, zone_name):
-        if zone_name in self.zone_map:
-            ids = self.zone_map[zone_name]
-            return ids[0] if self.color == 0 else ids[1]
-        return None
 
     def ui_callback(self, msg):
         if len(msg.data) < 3: return
@@ -104,18 +96,7 @@ class MissionManager(Node):
         req.pose.pose.pose.orientation.w = math.cos(yaw_home / 2.0)
         
         self.ekf_client.call_async(req)
-        
-        if self.reload_shapes_client.service_is_ready():
-            self.reload_shapes_client.call_async(Trigger.Request())
     
-        cleanup_ids = self.zone_map['start_cleanup'][0] if self.color == 0 else self.zone_map['start_cleanup'][1]
-        for zone_id in cleanup_ids:
-            if self.remove_shape_client.service_is_ready():
-                req = RemoveShape.Request()
-                req.identifier = zone_id
-                self.remove_shape_client.call_async(req)
-                self.get_logger().info(f'Zone de départ {zone_id} supprimée.')
-
         self.match_started = False
         self.current_step = 0
         self.create_timer(1.0, self.finish_reset_callback)
@@ -169,14 +150,6 @@ class MissionManager(Node):
 
     def get_result_callback(self, future):
         if future.result().status == 4: # SUCCEEDED
-            if self.current_step < len(self.waypoints):
-                z_name = self.waypoints[self.current_step]['zone_name']
-                t_id = self.get_target_id(z_name)
-                if t_id:
-                    req = RemoveShape.Request()
-                    req.identifier = t_id
-                    self.remove_shape_client.call_async(req)
-
             self.current_step += 1
             self.send_next_goal()
 
