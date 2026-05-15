@@ -201,7 +201,7 @@ class MissionManager(Node):
         elif self.current_step == len(self.waypoints)+2:
             # Étape finale : Retour à la base automatique (déclenché par la fin de liste ou par les 85s)
             x = 1.2 if self.color == 0 else -1.2
-            y = 1.7
+            y = 1.78
             yaw = -1.57
             self.get_logger().info('Retour à la base de départ...')
         else:
