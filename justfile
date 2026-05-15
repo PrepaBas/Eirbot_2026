@@ -127,3 +127,7 @@ lidar:
 
 chmod:
     sudo chmod 666 /dev/ttyUSB0
+
+add_user_docker:
+    sudo usermod -aG docker $USER 
+    newgrp docker

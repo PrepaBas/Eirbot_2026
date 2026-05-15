@@ -32,6 +32,9 @@ tmux rename-window -t $SESSION:0 'Agent'
 # On entre dans le conteneur pour lancer l'agent avec ta commande
 tmux send-keys -t $SESSION:0 "docker exec -it $CONTAINER bash -c 'just chmod && source ~/ros2_ws/install/setup.bash && source /home/ros/ros2_ws/install/setup.bash && just lura'" C-m
 
+
+sleep 7
+
 # --- FENÊTRE 2 : MATCH (BRINGUP) ---
 tmux new-window -t $SESSION:1 -n 'Match'
 # On prépare le split d'écran AVANT de lancer les commandes
@@ -39,6 +42,9 @@ tmux split-window -v -t $SESSION:1
 
 # Panneau du haut : Lancement du Bringup
 tmux send-keys -t $SESSION:1.0 "docker exec -it $CONTAINER  bash -c 'source ~/ros2_ws/install/setup.bash && source /home/ros/ros2_ws/install/setup.bash && ros2 launch eirbot_bringup rasp.launch.py'" C-m
+
+
+sleep 5
 
 # Panneau du bas : Monitoring des switches (Tirette)
 tmux send-keys -t $SESSION:1.1 "docker exec -it $CONTAINER bash -c 'source ~/ros2_ws/install/setup.bash && source /home/ros/ros2_ws/install/setup.bash && ros2 topic echo /hardware/switches'" C-m
