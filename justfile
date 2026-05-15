@@ -88,7 +88,6 @@ clone:
     cd ~/ros2_ws/src && \
     git clone https://github.com/sherif1152/nav2-virtual-layer.git && \
     git clone -b $ROS_DISTRO https://github.com/micro-ROS/micro_ros_setup.git \
-    git clone https://github.com/Slamtec/sllidar_ros2.git
 
 rosdeps:
     cd ~/ros2_ws
