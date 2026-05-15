@@ -30,6 +30,12 @@ class MissionManager(Node):
         # 3. STRATÉGIE LOGIQUE (Coordonnées de base pour le côté BLEU / X positif)
         self.waypoints = [
             {'pos': (1.25, 1.45, -1.57), 'zone_name': 'loading_v_top'},
+            {'pos': (0.7, 0.8, 3.14),  'zone_name': 'loading_h_mid'},
+            # {'pos': (0.8, 0.25, 3.14),  'zone_name': 'loading_h_bot'},
+
+            #{'pos': (-0.7, 0.8, 0.0),  'zone_name': 'loading_h_mid_mirror'},
+            #{'pos': (-0.8, 0.25, 0.0),  'zone_name': 'loading_h_bot_mirror'},
+        
         ]
 
         # Mapping des IDs de zones pour traitement futur (Ex: Virtual Layer)
