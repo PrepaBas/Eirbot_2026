@@ -16,7 +16,8 @@ SafetyNode::SafetyNode(const rclcpp::NodeOptions & options)
     // --- CONFIGURATION DES TOPICS DE CAPTEURS ---
     // Tu peux ajouter ici tous les topics de tes ToF ou Ultrasons
     std::vector<std::string> range_topics = {
-        "/hardware/ultrasons", 
+        "/hardware/ultrasons_1", 
+        "/hardware/ultrasons_2",
         // "/hardware/tof_gauche", 
         // "/hardware/tof_droit"
     };
