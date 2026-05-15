@@ -11,20 +11,20 @@ build:
     cd ~/ros2_ws 
     colcon build --symlink-install --cmake-args -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DPython_FIND_VIRTUALENV=ONLY -DPython3_FIND_VIRTUALENV=ONLY
 
-sdr:
+sdd:
     docker run -d \
-    --restart always \
     --net=host \
     -v $(pwd):/home/ros/ros2_ws \
     --name my_ros_container \
     --user ros \
+    --env="DISPLAY" \
+    --env="QT_X11_NO_MITSHM=1" \
     -v /dev:/dev  \
     --privileged \
     --ulimit rtprio=99 \
     --ulimit memlock=-1 \
     --cap-add=SYS_NICE \
-    ros2_container \
-    ros2 launch eirbot_bringup rasp.launch.py
+    ros2_container sleep infinity
 
 sd:
     docker run -it \
@@ -126,4 +126,4 @@ lidar:
     ros2 launch sllidar_ros2 sllidar_a1_launch.py serial_port:=/dev/ttyAMA0 scan_mode:=Boost serial_baudrate:=115200
 
 chmod:
-    sudo chmod 666 /dev/ttyAMA0 /dev/ttyUSB0
+    sudo chmod 666 /dev/ttyUSB0
