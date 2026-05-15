@@ -31,7 +31,7 @@ class MissionManager(Node):
         # 3. STRATÉGIE LOGIQUE (Coordonnées pour le côté BLEU / X positif)
         self.waypoints = [
             {'pos': (1.25, 1.45, -1.57), 'zone_name': 'loading_v_top'},
-            # {'pos': (0.7, 0.8, 3.14),  'zone_name': 'loading_h_mid'},
+            {'pos': (0.7, 0.8, 3.14),  'zone_name': 'loading_h_mid'},
         ]
 
         self.zone_map = {
@@ -124,7 +124,7 @@ class MissionManager(Node):
 
         # Calcul de la Pose Home Symétrique
         x_home = 1.2 if self.color == 0 else -1.2
-        y_home = 1.72
+        y_home = 1.50
         yaw_home = -1.57
 
         req = SetPose.Request()
