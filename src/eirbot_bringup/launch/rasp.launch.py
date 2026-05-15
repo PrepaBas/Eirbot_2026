@@ -62,13 +62,13 @@ def generate_launch_description():
 
 
         # 6. Safety Node (Le gardien du Lidar)
-        #Node(
-        #    package='eirbot_safety',
-        #    executable='safety_node', # Vérifie le nom dans ton CMakeLists.txt
-        #    name='safety_node',
-        #    output='screen',
-        #    parameters=[{'stop_distance': 0.30}] # Tu peux régler la distance ici
-        #),
+        Node(
+            package='eirbot_safety',
+            executable='safety_node', # Vérifie le nom dans ton CMakeLists.txt
+            name='safety_node',
+            output='screen',
+            parameters=[{'stop_distance': 0.30}] # Tu peux régler la distance ici
+        ),
 
         # 1. Le Twist Mux
         Node(
