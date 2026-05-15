@@ -125,7 +125,7 @@ class MissionManager(Node):
         # Calcul de la Pose Home Symétrique
         x_home = 1.2 if self.color == 0 else -1.2
         y_home = 1.50
-        yaw_home = -1.57
+        yaw_home = -1.75
 
         req = SetPose.Request()
         req.pose.header.frame_id = 'map'
