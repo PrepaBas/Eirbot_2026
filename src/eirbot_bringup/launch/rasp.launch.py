@@ -12,7 +12,6 @@ def generate_launch_description():
     pkg_base = get_package_share_directory('eirbot_base')
     pkg_local = get_package_share_directory('eirbot_localization')
     pkg_nav = get_package_share_directory('eirbot_navigation')
-    pkg_sllidar = get_package_share_directory('sllidar_ros2')
 
     # Arguments (pour garder la main sur le mode simulation/mock)
     use_mock = LaunchConfiguration('use_mock', default='false')
