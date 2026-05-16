@@ -55,7 +55,7 @@ class MissionManager(Node):
     def ui_callback(self, msg):
         if len(msg.data) < 3: 
             return
-        self.color, reset_btn, tirette = msg.data[0], msg.data[1], msg.data[2]
+        self.color, reset_btn, tirette = not msg.data[0], msg.data[1], msg.data[2]
 
         # Gestion du bouton Reset
         if reset_btn == 1:
