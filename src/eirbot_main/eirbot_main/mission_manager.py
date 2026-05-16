@@ -50,7 +50,6 @@ class MissionManager(Node):
         self.match_start_time = None
         self.forced_return_triggered = False  # Évite d'envoyer l'ordre de retour en boucle
         
-        self.get_logger().info("La couleur est définie sur : " + ("BLEU" if self.color == 0 else "ORANGE"))
         self.pub_ready = self.create_publisher(Bool, '/wait_for_start', 10)
 
 
@@ -163,6 +162,8 @@ class MissionManager(Node):
 
         ready_msg = Bool()
         ready_msg.data = True
+
+        self.get_logger().info("La couleur est définie sur : " + ("BLEU" if self.color == 0 else "ORANGE"))
         self.pub_ready.publish(ready_msg)
 
     def send_next_goal(self):
