@@ -123,7 +123,7 @@ class MissionManager(Node):
             self.current_goal_handle = None
 
         # Calcul de la Pose Home Symétrique
-        x_home = 1.31 if self.color == 0 else -1.2
+        x_home = 1.28 if self.color == 0 else -1.2
         y_home = 1.85
         yaw_home = -1.57
 
