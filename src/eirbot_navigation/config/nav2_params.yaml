@@ -65,12 +65,12 @@ controller_server:
       desired_linear_vel: 0.4
       max_linear_accel: 1.0
       max_angular_accel: 5.0
-      max_angular_velocity: 4.5
+      max_angular_velocity: 6.5
       lookahead_dist: 0.25
       min_lookahead_dist: 0.25
       max_lookahead_dist: 0.50
       lookahead_time: 0.80
-      rotate_to_heading_angular_vel: 4.5
+      rotate_to_heading_angular_vel: 6.5
       transform_tolerance: 0.5
       use_velocity_scaled_lookahead_dist: true
       min_approach_linear_velocity: 0.05
