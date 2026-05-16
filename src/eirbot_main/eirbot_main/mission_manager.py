@@ -32,6 +32,8 @@ class MissionManager(Node):
         self.waypoints = [
             {'pos': (1.23, 1.45, -1.57), 'zone_name': 'loading_v_top'},
             {'pos': (0.7, 0.8, 3.14),  'zone_name': 'loading_h_mid'},
+            {'pos': (0.395, 1.15, 00.0), 'zone_name': 'loading_v_mid'},
+            
         ]
 
         self.zone_map = {
