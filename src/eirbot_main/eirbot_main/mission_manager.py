@@ -123,8 +123,8 @@ class MissionManager(Node):
             self.current_goal_handle = None
 
         # Calcul de la Pose Home Symétrique
-        x_home = 1.2 if self.color == 0 else -1.2
-        y_home = 1.75
+        x_home = 1.31 if self.color == 0 else -1.2
+        y_home = 1.85
         yaw_home = -1.57
 
         req = SetPose.Request()
@@ -188,7 +188,7 @@ class MissionManager(Node):
         elif self.current_step == len(self.waypoints):
             # Étape finale : Retour à la base automatique (déclenché par la fin de liste ou par les 85s)
             x = 1.0 if self.color == 0 else -1.2
-            y = 1.2
+            y = 1.0
             yaw = -1.57
             self.get_logger().info('Deplacement vers la zone dattente pami')
             
