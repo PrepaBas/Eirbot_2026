@@ -33,6 +33,12 @@ class MissionManager(Node):
             #{'pos': (1.23, 1.45, -1.57), 'zone_name': 'loading_v_top'},
             {'pos': (0.7, 0.8, 3.14),  'zone_name': 'loading_h_mid'},
             {'pos': (0.75, 0.25, 3.14),  'zone_name': 'loading_h_bot'},
+            {'pos': (0.65, 0.23, 3.14), 'zone_name': 'loading_h_bot_2'},
+
+
+            {'pos': (-0.7, 0.8, 3.14),  'zone_name': 'loading_h_mid'},
+            {'pos': (-0.75, 0.25, 3.14),  'zone_name': 'loading_h_bot'},
+
             
         ]
 
